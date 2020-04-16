@@ -2352,7 +2352,7 @@ function findPDVFordis(vFlag){
     var vHtml = '';
     var fech_dtos = getYMD(0).substr(0,6);
     var vCircuitos = [];
-    vLimiteCredito = [];
+    vMontoCredito = [];
     if(vFlag==0){        
         try{
         var dvListx= document.getElementById('dvListPDVs');
@@ -2411,7 +2411,7 @@ function findPDVFordis(vFlag){
     }
 
 }
-function getLimiteCredito(id_pdv, vIdQ){
+function getMontoCredito(id_pdv, vIdQ){
     obj=null;
 
     for(i=0;i<vMontoCredito.length;i++){
