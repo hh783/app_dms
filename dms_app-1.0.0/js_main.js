@@ -30,6 +30,14 @@ var vFileG;  //Variable para foto del usuario
 var lat1, lng1;
 var vDistance = 0;
 var vFechIniHorus;
+//-- archivos en forms
+var arrFileForms = [];
+var countG=0;
+var arrFilePost = [];
+var arrFileSplit = [];
+var cntPost = 0;
+var vArrFileIds = [];
+var vMontoCredito = [];
 
 //var webSvrListener =  setInterval(function(){ consultSVR()}, 59000);
 var pagRoot = [{id:0, back:0},
