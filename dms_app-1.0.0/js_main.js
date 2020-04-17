@@ -2281,7 +2281,7 @@ function showPdvs(ymd){
             
             if(len>0){                    
                 for(i=0; i<len; i++){                    
-                    vStrHtml += '<tr><td>'+ (i+1) +'</td><td><a href="#" onclick="fichaPDV('+ results.rows[i].id_pdv +')">'+ results.rows[i].id_pdv +'</a></td><td>'+ results.rows[i].nombre_circuito +'</td><td>'+ results.rows[i].nombre_pdv +'</td><td>'+results.rows[i].monto_credito+'</td></tr>';
+                    vStrHtml += '<tr><td>'+ (i+1) +'</td><td><a href="#" onclick="fichaPDV('+ results.rows[i].id_pdv +')">'+ results.rows[i].id_pdv +'</a></td><td>'+ results.rows[i].nombre_circuito +'</td><td>'+ results.rows[i].nombre_pdv +'</td></tr>';
                 }                
             }
             vStrHtml += '</tbody> </table>';
