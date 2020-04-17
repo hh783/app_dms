@@ -8,8 +8,7 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost:8090/ws_so/service_so.php'; 
-var ws_url =   'https://190.4.63.207/ws_so/service_so.php';
-//var ws_url = 'http://localhost:8080/ws_so/service_so.php';
+var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
 
 var vDatosUsuario ={"user":"", "login":"", "name":"", "phone":0, "email":"na", "job":"na", "id_dms":0, "perfil":0, "id_pdv_dlr":0};
 var vTitle ="S.O. DMS Experience";
@@ -30,14 +29,6 @@ var vFileG;  //Variable para foto del usuario
 var lat1, lng1;
 var vDistance = 0;
 var vFechIniHorus;
-//-- archivos en forms
-var arrFileForms = [];
-var countG=0;
-var arrFilePost = [];
-var arrFileSplit = [];
-var cntPost = 0;
-var vArrFileIds = [];
-var vMontoCredito = [];
 
 //var webSvrListener =  setInterval(function(){ consultSVR()}, 59000);
 var pagRoot = [{id:0, back:0},
@@ -2168,7 +2159,7 @@ function getPlanningDMS(){
                     setTimeout(function(){
                         //console.log(vResult.length);
                         for(i=0; i<vResult.plan.length; i++){
-                            query = 'insert into tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia, monto_credito) values(';
+                            query = 'insert into tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia) values(';
                             query += vResult.plan[i].aniomes + ',';
                             query += vResult.plan[i].semana_anio + ',';
                             query += '\'' + vResult.plan[i].usuario + '\',';
@@ -2176,11 +2167,9 @@ function getPlanningDMS(){
                             query += vResult.plan[i].circuit + ',';
                             query += '\'' + vResult.plan[i].nombre_circuito + '\',';
                             query += vResult.plan[i].id_pdv + ',';
-                            query += '\'' + vResult.plan[i].nombre_pdv + '\' ,';
-                            query += '\'' + vResult.plan[i].dias_semana + '\' ,';
-                            query += vResult.plan[i].ymd_dia +',';
-                            query += '1000)';
-                            //query += vResult.plan[i].monto_credito +')';
+                            query += '\'' + vResult.plan[i].nombre_pdv + '\',';
+                            query += '\'' + vResult.plan[i].dias_semana + '\',';
+                            query += vResult.plan[i].ymd_dia + ')';
                             ejecutaSQL(query, 0);
                         }
 
@@ -2361,7 +2350,6 @@ function findPDVFordis(vFlag){
     var vHtml = '';
     var fech_dtos = getYMD(0).substr(0,6);
     var vCircuitos = [];
-    vMontoCredito = [];
     if(vFlag==0){        
         try{
         var dvListx= document.getElementById('dvListPDVs');
@@ -2374,12 +2362,11 @@ function findPDVFordis(vFlag){
         setTimeout(function(){$.mobile.loading('show');},100);
 
         db.transaction(function(cmd){   
-            cmd.executeSql('SELECT distinct id_pdv, nombre_pdv, nombre_circuito, monto_credito FROM tbl_plan_dms where aniomes=? order by nombre_circuito,nombre_pdv', [parseInt(fech_dtos)], function (cmd, results) {
+            cmd.executeSql('SELECT distinct id_pdv, nombre_pdv, nombre_circuito FROM tbl_plan_dms where aniomes=? order by nombre_circuito,nombre_pdv', [parseInt(fech_dtos)], function (cmd, results) {
                 var len = results.rows.length;
                 
                 if(len>0){  
                     for(k=0;k<len;k++){
-                        vMontoCredito.push({"id_pdv":results.rows[k].id_pdv, "monto_c":results.rows[k].monto_credito});
                         if(vCircuitos.indexOf(results.rows[k].nombre_circuito)==-1){
                             vCircuitos.push(results.rows[k].nombre_circuito);
                         }
@@ -2419,17 +2406,6 @@ function findPDVFordis(vFlag){
         }catch(e){null};
     }
 
-}
-function getMontoCredito(id_pdv, vIdQ){
-    obj=null;
-
-    for(i=0;i<vMontoCredito.length;i++){
-        if(parseInt(vMontoCredito[i].id_pdv)==parseInt(id_pdv)){            
-            obj = document.getElementById('' + vIdQ);
-            obj.value = parseInt(vMontoCredito[i].monto_c);
-            break;
-        }            
-    }
 }
 
 function setPDVFordis(vIdPDV){
