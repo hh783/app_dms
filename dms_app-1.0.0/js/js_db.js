@@ -11,7 +11,7 @@ db.transaction(function(cmd){
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_forms_filled (id_form, dtos, date, status, lat, lng)'); 
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_files (id_file, correl, name, type, strdtos)'); 
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_ventas(particion, anomes, id_dms, producto, unidad, meta, monto)');
-    cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia, monto_credito)');    
+    cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia)');    
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_ficha_pdv(id_pdv unique, nombre_pdv, duenio, dir, mbl_epin, mbl_tmy, segmento_pop)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_visitas_pdv(id_pdv, fecha_ymd, usuario)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_ejec_sucursales(anomes, id_dealer, nombre_dealer, id_sucursal, nombre_sucursal, producto, ejecucion, meta, res, unidad)');

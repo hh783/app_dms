@@ -8,8 +8,7 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost:8090/ws_so/service_so.php'; 
-var ws_url =   'https://190.4.63.207/ws_so/service_so.php';
-//var ws_url = 'http://localhost:8080/ws_so/service_so.php';
+var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
 
 var vDatosUsuario ={"user":"", "login":"", "name":"", "phone":0, "email":"na", "job":"na", "id_dms":0, "perfil":0, "id_pdv_dlr":0};
 var vTitle ="S.O. DMS Experience";
@@ -2160,7 +2159,7 @@ function getPlanningDMS(){
                     setTimeout(function(){
                         //console.log(vResult.length);
                         for(i=0; i<vResult.plan.length; i++){
-                            query = 'insert into tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia, monto_credito) values(';
+                            query = 'insert into tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia) values(';
                             query += vResult.plan[i].aniomes + ',';
                             query += vResult.plan[i].semana_anio + ',';
                             query += '\'' + vResult.plan[i].usuario + '\',';
@@ -2168,11 +2167,9 @@ function getPlanningDMS(){
                             query += vResult.plan[i].circuit + ',';
                             query += '\'' + vResult.plan[i].nombre_circuito + '\',';
                             query += vResult.plan[i].id_pdv + ',';
-                            query += '\'' + vResult.plan[i].nombre_pdv + '\' ,';
-                            query += '\'' + vResult.plan[i].dias_semana + '\' ,';
-                            query += vResult.plan[i].ymd_dia +',';
-                            query += vResult.plan[i].monto_credito
-                            ')';
+                            query += '\'' + vResult.plan[i].nombre_pdv + '\',';
+                            query += '\'' + vResult.plan[i].dias_semana + '\',';
+                            query += vResult.plan[i].ymd_dia + ')';
                             ejecutaSQL(query, 0);
                         }
 
@@ -2271,18 +2268,18 @@ function showPdvs(ymd){
     setTimeout(function(){$.mobile.loading('show');},100);
 
     db.transaction(function(cmd){   
-        cmd.executeSql('SELECT id_pdv, nombre_pdv, nombre_circuito,monto_credito FROM tbl_plan_dms where ymd_dia=? order by nombre_pdv', [parseInt(ymd)], function (cmd, results) {
+        cmd.executeSql('SELECT id_pdv, nombre_pdv, nombre_circuito FROM tbl_plan_dms where ymd_dia=? order by nombre_pdv', [parseInt(ymd)], function (cmd, results) {
             var len = results.rows.length;
             vStrHtml = '<h3>PDVs Plan '+ getFechFormated(ymd) +'</h3>'
             vStrHtml += '<input type="search" id="finderPDv1" onkeyup="funcTblFindPdv()" placeholder="nombre pdv"/>'
             vStrHtml += '<table id="pdvsTble1" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-            vStrHtml += '<thead><tr><th width="5%">#</th><th width="10%">Id Pdv</th><th data-priority="2" width="10%">Circuito</th><th width="30%">Nombre</th> <th>Credito Autorizado</th> </tr></thead>';
+            vStrHtml += '<thead><tr><th width="5%">#</th><th width="10%">Id Pdv</th><th data-priority="2" width="10%">Circuito</th><th width="30%">Nombre</th></tr></thead>';
             vStrHtml += '<tbody>';
 
             
             if(len>0){                    
                 for(i=0; i<len; i++){                    
-                    vStrHtml += '<tr><td>'+ (i+1) +'</td><td><a href="#" onclick="fichaPDV('+ results.rows[i].id_pdv +')">'+ results.rows[i].id_pdv +'</a></td><td>'+ results.rows[i].nombre_circuito +'</td><td>'+ results.rows[i].nombre_pdv +'</td><td>'+results.rows[i].monto_credito+'</td></tr>';
+                    vStrHtml += '<tr><td>'+ (i+1) +'</td><td><a href="#" onclick="fichaPDV('+ results.rows[i].id_pdv +')">'+ results.rows[i].id_pdv +'</a></td><td>'+ results.rows[i].nombre_circuito +'</td><td>'+ results.rows[i].nombre_pdv +'</td></tr>';
                 }                
             }
             vStrHtml += '</tbody> </table>';
