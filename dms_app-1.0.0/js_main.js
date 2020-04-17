@@ -2271,12 +2271,12 @@ function showPdvs(ymd){
     setTimeout(function(){$.mobile.loading('show');},100);
 
     db.transaction(function(cmd){   
-        cmd.executeSql('SELECT id_pdv, nombre_pdv, nombre_circuito,monto_credito FROM tbl_plan_dms where ymd_dia=? order by nombre_pdv', [parseInt(ymd)], function (cmd, results) {
+        cmd.executeSql('SELECT id_pdv, nombre_pdv, nombre_circuito FROM tbl_plan_dms where ymd_dia=? order by nombre_pdv', [parseInt(ymd)], function (cmd, results) {
             var len = results.rows.length;
             vStrHtml = '<h3>PDVs Plan '+ getFechFormated(ymd) +'</h3>'
             vStrHtml += '<input type="search" id="finderPDv1" onkeyup="funcTblFindPdv()" placeholder="nombre pdv"/>'
             vStrHtml += '<table id="pdvsTble1" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-            vStrHtml += '<thead><tr><th width="5%">#</th><th width="10%">Id Pdv</th><th data-priority="2" width="10%">Circuito</th><th width="30%">Nombre</th> <th>Credito Autorizado</th> </tr></thead>';
+            vStrHtml += '<thead><tr><th width="5%">#</th><th width="10%">Id Pdv</th><th data-priority="2" width="10%">Circuito</th><th width="30%">Nombre</th></tr></thead>';
             vStrHtml += '<tbody>';
 
             
