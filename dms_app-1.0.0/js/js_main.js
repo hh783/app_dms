@@ -2379,7 +2379,8 @@ function findPDVFordis(vFlag){
                             vCircuitos.push(results.rows[k].nombre_circuito);
                         }
                     }
-
+                        alert( 'arrreo inicial '+ vMontoCredito.length);
+                    
                     vStrHtml = '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="findPDVFordis(1)">Cerrar</button><h3>PDVs Planning</h3>';
                     vStrHtml += '<input type="search" id="finderPDv2" onkeyup="funcTblFindPdv2()" placeholder="nombre pdv"/>';
                     vStrHtml += '<label>Circuito</label><select id="cbCirPlanPDV" onchange="changCircSearchPlan(this)" data-mini="true">';
