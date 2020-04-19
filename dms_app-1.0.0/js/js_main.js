@@ -2369,9 +2369,11 @@ function findPDVFordis(vFlag){
         db.transaction(function(cmd){   
             cmd.executeSql('SELECT distinct id_pdv, nombre_pdv, nombre_circuito, monto_credito FROM tbl_plan_dms where aniomes=? order by nombre_circuito,nombre_pdv', [parseInt(fech_dtos)], function (cmd, results) {
                 var len = results.rows.length;
-                
+                alert(len);
                 if(len>0){  
+                    
                     for(k=0;k<len;k++){
+                        
                          vMontoCredito.push({"id_pdv":results.rows[k].id_pdv, "monto_c":results.rows[k].monto_credito});
                         if(vCircuitos.indexOf(results.rows[k].nombre_circuito)==-1){
                             vCircuitos.push(results.rows[k].nombre_circuito);
