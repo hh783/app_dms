@@ -2421,6 +2421,7 @@ function getMontoCredito(id_pdv, vIdQ){
         if(parseInt(vMontoCredito[i].id_pdv)==parseInt(id_pdv)){            
             obj = document.getElementById('' + vIdQ);
             obj.value = parseInt(vMontoCredito[i].monto_c);
+            alert(vMontoCredito[i].monto_c);
             break;
         }            
     }
