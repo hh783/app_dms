@@ -2170,8 +2170,8 @@ function getPlanningDMS(){
                             query += '\'' + vResult.plan[i].nombre_pdv + '\',';
                             query += '\'' + vResult.plan[i].dias_semana + '\',';
                             query += vResult.plan[i].ymd_dia + ',';
-                             query += '1000)';
-                            //query += vResult.plan[i].monto_credito +')';
+                             //query += '1000)';
+                            query += vResult.plan[i].monto_credito +')';
                             ejecutaSQL(query, 0);
                         }
 
@@ -2369,7 +2369,7 @@ function findPDVFordis(vFlag){
         db.transaction(function(cmd){   
             cmd.executeSql('SELECT distinct id_pdv, nombre_pdv, nombre_circuito, monto_credito FROM tbl_plan_dms where aniomes=? order by nombre_circuito,nombre_pdv', [parseInt(fech_dtos)], function (cmd, results) {
                 var len = results.rows.length;
-                alert(len);
+                //alert(len);
                 if(len>0){  
                     
                     for(k=0;k<len;k++){
@@ -2379,7 +2379,7 @@ function findPDVFordis(vFlag){
                             vCircuitos.push(results.rows[k].nombre_circuito);
                         }
                     }
-                        alert( 'arrreo inicial '+ vMontoCredito.length);
+                     //   alert( 'arrreo inicial '+ vMontoCredito.length);
                     
                     vStrHtml = '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="findPDVFordis(1)">Cerrar</button><h3>PDVs Planning</h3>';
                     vStrHtml += '<input type="search" id="finderPDv2" onkeyup="funcTblFindPdv2()" placeholder="nombre pdv"/>';
