@@ -2416,7 +2416,7 @@ function findPDVFordis(vFlag){
 
 function getMontoCredito(id_pdv, vIdQ){
     obj=null;
-    alert(vMontoCredito.length);
+    alert('arreglo'+ vMontoCredito.length);
     alert(vMontoCredito[0].monto_c);
     for(i=0;i<vMontoCredito.length;i++){
         if(parseInt(vMontoCredito[i].id_pdv)==parseInt(id_pdv)){            
