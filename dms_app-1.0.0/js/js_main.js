@@ -2169,7 +2169,7 @@ function getPlanningDMS(){
                             query += vResult.plan[i].id_pdv + ',';
                             query += '\'' + vResult.plan[i].nombre_pdv + '\',';
                             query += '\'' + vResult.plan[i].dias_semana + '\',';
-                            query += vResult.plan[i].ymd_dia + ')';
+                            query += vResult.plan[i].ymd_dia + ',';
                              query += '1000)';
                             //query += vResult.plan[i].monto_credito +')';
                             ejecutaSQL(query, 0);
