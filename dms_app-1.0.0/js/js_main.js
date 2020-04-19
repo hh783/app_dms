@@ -2353,7 +2353,7 @@ function findPDVFordis(vFlag){
     var fech_dtos = getYMD(0).substr(0,6);
     var vCircuitos = [];
     
-     vMontoCredito = [];
+     //vMontoCredito = [];
     
     if(vFlag==0){        
         try{
