@@ -2419,13 +2419,13 @@ function findPDVFordis(vFlag){
 
 function getMontoCredito(id_pdv, vIdQ){
     obj=null;
-    alert('arreglo'+ vMontoCredito.length);
-    alert(vMontoCredito[0].monto_c);
+    //alert('arreglo'+ vMontoCredito.length);
+    //alert(vMontoCredito[0].monto_c);
     for(i=0;i<vMontoCredito.length;i++){
         if(parseInt(vMontoCredito[i].id_pdv)==parseInt(id_pdv)){            
             obj = document.getElementById('' + vIdQ);
             obj.value = parseInt(vMontoCredito[i].monto_c);
-            alert(vMontoCredito[i].monto_c);
+           // alert(vMontoCredito[i].monto_c);
             break;
         }            
     }
