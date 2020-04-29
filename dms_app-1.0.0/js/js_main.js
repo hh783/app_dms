@@ -2436,6 +2436,7 @@ function setPDVFordis(vIdPDV){
     obj = document.getElementById('Q2');
     obj.value = vIdPDV;
     alert (vIdFormulario);
+     $("#Q2").trigger('change');
     findPDVFordis(1);
 }
 
@@ -2550,7 +2551,6 @@ function makeFordis04(vPDV){
     desplegarForm('FORDIS04');
     setTimeout(function(){
         $("#Q2").val(vPDV);
-        $("#Q2").trigger('change');
         $('html, body').animate({
             scrollTop: 0
         }, 800);
