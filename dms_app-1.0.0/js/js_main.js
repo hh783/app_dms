@@ -2432,10 +2432,9 @@ function getMontoCredito(id_pdv, vIdQ){
 }
 
 function setPDVFordis(vIdPDV){
-    //console.log(vIdPDV);
+    //Aqui se ejecuta el set del IDPDV;
     obj = document.getElementById('Q2');
     obj.value = vIdPDV;
-    alert (vIdFormulario);
      $("#Q2").trigger('change');
     findPDVFordis(1);
 }
