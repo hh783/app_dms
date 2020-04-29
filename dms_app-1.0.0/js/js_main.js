@@ -2549,6 +2549,7 @@ function makeFordis04(vPDV){
     desplegarForm('FORDIS04');
     setTimeout(function(){
         $("#Q2").val(vPDV);
+        $("#Q2").trigger('change');
         $('html, body').animate({
             scrollTop: 0
         }, 800);
