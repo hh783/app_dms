@@ -2435,6 +2435,7 @@ function setPDVFordis(vIdPDV){
     //console.log(vIdPDV);
     obj = document.getElementById('Q2');
     obj.value = vIdPDV;
+    alert (vIdFormulario);
     findPDVFordis(1);
 }
 
