@@ -1,1 +1,0 @@
-https://gpsboc.tigo.com.hn/ws_so/service_so.php'
