@@ -10,6 +10,7 @@ var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
 var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
 var vMontoCredito = [];
+var vVentaSugerida = [];
 var vDatosUsuario ={"user":"", "login":"", "name":"", "phone":0, "email":"na", "job":"na", "id_dms":0, "perfil":0, "id_pdv_dlr":0};
 var vTitle ="S.O. DMS Experience";
 var map;
@@ -2456,6 +2457,17 @@ function getMontoCredito(id_pdv, vIdQ){
            // alert(vMontoCredito[i].monto_c);
             break;
         }            
+    }
+}
+
+function getVentaSugerida(id_pdv, vIdQ){
+    obj=null
+    for(i=0;i<vVentaSugerida.length;i++){
+        if(parseInt(vVentaSugerida[i].id_pdv) == parseInt(id_pdv)){
+            obj = documente.getElementById('' + vIdQ);
+            obj.value = parseInt(vVentaSugerida[i].promedio_diario) ;
+            break;
+        }
     }
 }
 
