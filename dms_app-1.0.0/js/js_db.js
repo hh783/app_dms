@@ -18,7 +18,7 @@ db.transaction(function(cmd){
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_ficha_pdv(id_pdv unique, nombre_pdv, duenio, dir, mbl_epin, mbl_tmy, segmento_pop)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_visitas_pdv(id_pdv, fecha_ymd, usuario)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_ejec_sucursales(anomes, id_dealer, nombre_dealer, id_sucursal, nombre_sucursal, producto, ejecucion, meta, res, unidad)');
-    cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_fordis04_venta_sugerida(ANIO, semana, id_pdv, mon, mar, mie, jue, vie, sat, dom, promedio_diario)');
+    cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_fordis04_venta_sugerida(anio, semana, id_pdv, mon, mar, mie, jue, vie, sat, dom, promedio_diario)');
 
     db.transaction(function(cmd){   
         cmd.executeSql('SELECT * FROM users where id =?', ['admin'], function (cmd, results) {

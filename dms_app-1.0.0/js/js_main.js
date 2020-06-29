@@ -2168,6 +2168,33 @@ function getPlanningDMS(){
     weekNum = getWeekNumber(fech);
 
     $.mobile.loading('show');
+    
+    
+    $.ajax$.ajax({
+            url:ws_url,
+            type:'POST',
+            data:{m:309,vx:userWS, vy:pdwWS},        
+            dataType:'text',
+            success: function(data){
+                
+                var json = eval(data);
+                
+                if( json.length>0 ){
+                    
+                    ejecutaSQL('delete from tbl_fordis04_venta_sugerida', 0);
+                    
+                    for(var i=0; i<json.length; i++){
+                        
+                            ejecutaSQL('insert into tbl_fordis04_venta_sugerida (anio, semana, id_pdv, mon, mar, mie, jue, vie, sat, dom, promedio_diario) values("'+json[i].anio+'","'+json[i].semana+'","'+json[i].id_pdv+'","'+json[i].mon+'","'+json[i].mar+'", "'+json[i].mie+'", "'+json[i].jue+'", "'+json[i].vie+'", "'+json[i].sat+'", "'+json[i].dom+'", "'+json[i].promedio_diario+'")',0);                               
+                                     
+                        
+                    }
+                    
+                   
+                }
+                
+            }
+    })
 
     $.ajax({
             url:ws_url,
@@ -2384,7 +2411,8 @@ function findPDVFordis(vFlag){
     
      //vMontoCredito = [];
     
-    if(vFlag==0){        
+    if(vFlag==0){ 
+        
         try{
         var dvListx= document.getElementById('dvListPDVs');
         document.getElementById('dv_forms_template').removeChild(dvListx);
@@ -2403,7 +2431,8 @@ function findPDVFordis(vFlag){
                     
                     for(k=0;k<len;k++){
                         
-                         vMontoCredito.push({"id_pdv":results.rows[k].id_pdv, "monto_c":results.rows[k].monto_credito});
+                        vMontoCredito.push({"id_pdv":results.rows[k].id_pdv, "monto_c":results.rows[k].monto_credito});
+                        
                         if(vCircuitos.indexOf(results.rows[k].nombre_circuito)==-1){
                             vCircuitos.push(results.rows[k].nombre_circuito);
                         }
@@ -2435,7 +2464,25 @@ function findPDVFordis(vFlag){
             });
         });
 
+        //set Venta sugerida
         
+        db.transaction(function(cmd2){
+
+            cmd2.executeSql("SELECT anio, semana, id_pdv, mon, mar, mie, jue, vie, sat, dom, promedio_diario FROM tbl_nodos where 1=1 ", null,function (cmd2, results) {
+                console.log(results);
+                var len = results.rows.length;
+
+                for(var i=0;i<len; i++){
+                    vVentaSugerida.push({anio:results.rows[i].anio, semana:results.rows[i].semana, id_pdv:results.rows[i].id_pdv, mon:results.rows[i].mon, mar:results.row[i].mar, mie:results.row[i].mie, jue:results.row[i].jue, vie:results.row[i].vie, sat:results.rows[i].sat, dom:results.row[i].dom, promedio_diario:results.row[i].promedio_diario });
+                }
+
+              
+
+                
+            });
+
+
+        }); 
 
     }else{
         try{
@@ -2470,6 +2517,57 @@ function getVentaSugerida(id_pdv, vIdQ){
         }
     }
 }
+
+function getVentaEstimada(id_pdv, vIdQ){
+
+    obj=null
+
+    var fecha = new Date();
+    var dia = fecha.getDay();
+    obj = documente.getElementById('' + vIdQ);
+    for(i=0;i<vVentaSugerida.length;i++){
+
+        if(parseInt(vVentaSugerida[i].id_pdv) == parseInt(id_pdv)){
+
+            switch(dia){
+
+                case 0:  // domingo
+                obj.value = parseInt(vVentaSugerida[i].dom) ;
+                break;
+
+                case 1: // lunes 
+                obj.value = parseInt(vVentaSugerida[i].mon) ;
+                break;
+
+                case 2: // martes
+                obj.value = parseInt(vVentaSugerida[i].mar) ;
+                break;
+
+                case 3: // miercoles
+                obj.value = parseInt(vVentaSugerida[i].mie) ;
+                break;
+
+                case 4: // jueves
+                obj.value = parseInt(vVentaSugerida[i].jue) ;
+                break;
+
+                case 5: // viernes
+                obj.value = parseInt(vVentaSugerida[i].vie) ;
+                break;
+
+                case 6: // sabado
+                obj.value = parseInt(vVentaSugerida[i].sat) ;
+                break;
+
+            } // fin del switch
+
+            break;
+
+    } // fin del if
+
+    }// fin dell for
+
+}// fin del funcion
 
 function setPDVFordis(vIdPDV){
     //Aqui se ejecuta el set del IDPDV;
