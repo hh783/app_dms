@@ -8,7 +8,9 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
-var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
+//var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
+var ws_url = 'https://gpsboc.tigo.com.hn/ws_so';
+
 var vMontoCredito = [];
 var vVentaSugerida = [];
 var vDatosUsuario ={"user":"", "login":"", "name":"", "phone":0, "email":"na", "job":"na", "id_dms":0, "perfil":0, "id_pdv_dlr":0};
@@ -338,7 +340,10 @@ function changeSemanaPlan(cbsem){
 }
 
 function show_datos_user(vUser){
+    console.log(vUser);
+    
     db.transaction(function(cmd2){
+        
         cmd2.executeSql("SELECT * FROM users where id = ?", [vUser], function (cmd2, results) {
             var len = results.rows.length;
             if(len>0){
@@ -1211,12 +1216,15 @@ function updateForms(){
             });
         },
         success: function(data){
-            //console.log(data);
+            console.log(data);
             vQry = '';
             vQry = 'DELETE FROM tbl_forms';
+
+            
             ejecutaSQL(vQry, 0); 
 
             for(i=0;i<data.length; i++){
+                
                 vQry = 'INSERT INTO tbl_forms (id, desc, type, version, dtos, scripts, udt_dt) VALUES(';
                 vQry += '\'' + data[i].id + '\',\'' + data[i].desc + '\','  + data[i].tipo + ',' + data[i].ver + ',\'' + JSON.stringify(data[i].data) + '\',\''+ data[i].vscript +'\',\'' + data[i].udt_dt + '\')';                
                 //console.log(vQry);
@@ -2170,7 +2178,7 @@ function getPlanningDMS(){
     $.mobile.loading('show');
     
     
-    $.ajax$.ajax({
+    $.ajax({
             url:ws_url,
             type:'POST',
             data:{m:309,vx:userWS, vy:pdwWS},        
@@ -2203,13 +2211,14 @@ function getPlanningDMS(){
             dataType:'text',
             success: function(data){
                 vResult = eval('(' +data+')');                
-                //console.log(vResult);
+                console.log(vResult);
                 if(vResult.plan.length>0){
                     vQry = 'delete from tbl_plan_dms where aniomes='+ getYMD(0).substr(0,6) +' and upper(usuario)=\'' + vDatosUsuario.user.toUpperCase() + '\' and semana_anio=' + weekNum[1] ;
                     //console.log(vQry);
                     ejecutaSQL(vQry, 0);
                     setTimeout(function(){
-                        //console.log(vResult.length);
+                        console.log(vResult.length);
+
                         for(i=0; i<vResult.plan.length; i++){
                             query = 'insert into tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia, monto_credito) values(';
                             query += vResult.plan[i].aniomes + ',';
@@ -2224,6 +2233,9 @@ function getPlanningDMS(){
                             query += vResult.plan[i].ymd_dia + ',';
                              //query += '1000)';
                             query += vResult.plan[i].monto_credito +')';
+
+                            //console.log(query);
+                            //break;
                             ejecutaSQL(query, 0);
                         }
 

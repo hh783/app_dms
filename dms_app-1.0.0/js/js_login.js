@@ -1,6 +1,7 @@
 
 //var ws_url = 'http://localhost/ws_so/service_so.php';
-var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
+var ws_url = 'https://gpsboc.tigo.com.hn/ws_so';
+//var ws_url = gpsboc.tigo.com.hn/ws_so ;
 var userWS = '69BA4B9D76B7C3452E2A48B7BF9790FE';
 var pdwWS  = '0BAD6CE456FCFBEF59544697D43E06D1';
 var cont_logs = 0;
@@ -139,7 +140,7 @@ function login(){
                             
                             if(data[0].flag == 'true'){
                                 console.log('Log OK');
-                                vQuery = 'INSERT INTO users (id, pwd, name, phone, email, job_title, status, login,type, id_dms, license,id_pdv_dlr ,horus_completo)';
+                                vQuery = 'INSERT INTO users (id, pwd, name, phone, email, job_title, status, login,type, id_dms, license,id_pdv_dlr ,horus_completo) ';
                                 vQuery += 'VALUES(\''+ usr +'\',\''+ pwd +'\',\''+ data[0].vdatos[0].name +'\',';
                                 vQuery += data[0].vdatos[0].phone + ',';
                                 vQuery += '\'' + data[0].vdatos[0].email + '\',';
@@ -148,6 +149,7 @@ function login(){
                                 vQuery += data[0].vdatos[0].license +','+ data[0].vdatos[0].dlr_pdv_dms +', '+ data[0].vdatos[0].horus_completo+ ')';
                                 ejecutaSQL(vQuery, 0);
                                 $("#msj_err").html('');
+                                console.log(vQuery)
                                 setTimeout(function(){ window.location.replace('index.html?user=' + usr +  '&login=1'); }, 800);
                             }else{
                                 cont_logs += 1;
