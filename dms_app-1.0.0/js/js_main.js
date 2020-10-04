@@ -1,4 +1,4 @@
-// JavaScript General App
+
 
 var userWS = '69BA4B9D76B7C3452E2A48B7BF9790FE';
 var pdwWS  = '0BAD6CE456FCFBEF59544697D43E06D1';
@@ -8,8 +8,9 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
-//var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
-var ws_url = 'https://gpsboc.tigo.com.hn/ws_so';
+var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
+//var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
+//var ws_url = 'https://192.168.161.20/ws_so/service_so.php'; 
 
 var vMontoCredito = [];
 var vVentaSugerida = [];
@@ -28,6 +29,7 @@ var bgGeo;
 var vFormData = {};
 var vFormsPendientes = [];
 var vFileG;  //Variable para foto del usuario
+var vIdPdvG // variable para fordis04
 
 var lat1, lng1;
 var vDistance = 0;
@@ -1104,6 +1106,7 @@ function desplegarForm(vIdForm, callback){
     var vStrFrom = '';
     var vItems;
     var vFlag = 0;
+    vIdFormulario = vIdForm;
 
     //console.log(vIdForm);
     db.transaction(function(cmd){   
@@ -2167,6 +2170,7 @@ function sendCierreVtas(){
         });  
 }
 
+
 function getPlanningDMS(){
     var vResult;
     var weekNum;
@@ -2176,33 +2180,30 @@ function getPlanningDMS(){
     weekNum = getWeekNumber(fech);
 
     $.mobile.loading('show');
-    
-    
+
     $.ajax({
             url:ws_url,
             type:'POST',
-            data:{m:309,vx:userWS, vy:pdwWS},        
-            dataType:'text',
+            data:{m:309,vx:userWS, vy:pdwWS, usuario:vDatosUsuario.user.toUpperCase()},        
+            dataType:'json',
             success: function(data){
-                
+                console.log(data);
                 var json = eval(data);
                 
-                if( json.length>0 ){
-                    
-                    ejecutaSQL('delete from tbl_fordis04_venta_sugerida', 0);
-                    
-                    for(var i=0; i<json.length; i++){
-                        
-                            ejecutaSQL('insert into tbl_fordis04_venta_sugerida (anio, semana, id_pdv, mon, mar, mie, jue, vie, sat, dom, promedio_diario) values("'+json[i].anio+'","'+json[i].semana+'","'+json[i].id_pdv+'","'+json[i].mon+'","'+json[i].mar+'", "'+json[i].mie+'", "'+json[i].jue+'", "'+json[i].vie+'", "'+json[i].sat+'", "'+json[i].dom+'", "'+json[i].promedio_diario+'")',0);                               
-                                     
-                        
-                    }
-                    
-                   
-                }
-                
+                if( json.length>0 ){                    
+                    ejecutaSQL('delete from tbl_fordis04_venta_sugerida', 0);                    
+                    for(var i=0; i<json.length; i++){                        
+                        ejecutaSQL('insert into tbl_fordis04_venta_sugerida (anio, semana, id_pdv, mon, mar, mie, jue, vie, sat, dom, promedio_diario) values("'+json[i].anio+'","'+json[i].semana+'","'+json[i].id_pdv+'","'+json[i].mon+'","'+json[i].mar+'", "'+json[i].mie+'", "'+json[i].jue+'", "'+json[i].vie+'", "'+json[i].sat+'", "'+json[i].dom+'", "'+json[i].promedio_diario+'")',0);                                                         
+                    }                       
+                    setTimeout(function(){$.mobile.loading('hide')},3000);                       
+                }               
+            },error: function(error){
+                console.log(error);
+                $.mobile.loading('hide');
             }
-    })
+    });
+
+    
 
     $.ajax({
             url:ws_url,
@@ -2211,15 +2212,16 @@ function getPlanningDMS(){
             dataType:'text',
             success: function(data){
                 vResult = eval('(' +data+')');                
-                console.log(vResult);
+                //console.log(vResult);
                 if(vResult.plan.length>0){
                     vQry = 'delete from tbl_plan_dms where aniomes='+ getYMD(0).substr(0,6) +' and upper(usuario)=\'' + vDatosUsuario.user.toUpperCase() + '\' and semana_anio=' + weekNum[1] ;
                     //console.log(vQry);
                     ejecutaSQL(vQry, 0);
                     setTimeout(function(){
-                        console.log(vResult.length);
+                        //console.log(vResult.length);
 
                         for(i=0; i<vResult.plan.length; i++){
+                            //console.log(vResult.plan[i]);
                             query = 'insert into tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia, monto_credito) values(';
                             query += vResult.plan[i].aniomes + ',';
                             query += vResult.plan[i].semana_anio + ',';
@@ -2239,6 +2241,7 @@ function getPlanningDMS(){
                             ejecutaSQL(query, 0);
                         }
 
+                        
                         //Insert Fichas PDVs
                         for(i=0; i<vResult.fichas.length; i++){
                             ejecutaSQL('delete from tbl_ficha_pdv where id_pdv =' + vResult.fichas[i].id_pdv , 0);
@@ -2261,7 +2264,7 @@ function getPlanningDMS(){
 
 
                         }, 3000);
-                            
+
                         
                         showPlanSemana(weekNum[1], getYMD(0).toString().substr(0,6));
                     }, 800);
@@ -2301,6 +2304,7 @@ function getPlanningDMS(){
                     },5000);
                 }
             }); 
+            
 }
 
 function showPlanSemana(vNumSemana,vAniomes){
@@ -2476,26 +2480,6 @@ function findPDVFordis(vFlag){
             });
         });
 
-        //set Venta sugerida
-        
-        db.transaction(function(cmd2){
-
-            cmd2.executeSql("SELECT anio, semana, id_pdv, mon, mar, mie, jue, vie, sat, dom, promedio_diario FROM tbl_nodos where 1=1 ", null,function (cmd2, results) {
-                console.log(results);
-                var len = results.rows.length;
-
-                for(var i=0;i<len; i++){
-                    vVentaSugerida.push({anio:results.rows[i].anio, semana:results.rows[i].semana, id_pdv:results.rows[i].id_pdv, mon:results.rows[i].mon, mar:results.row[i].mar, mie:results.row[i].mie, jue:results.row[i].jue, vie:results.row[i].vie, sat:results.rows[i].sat, dom:results.row[i].dom, promedio_diario:results.row[i].promedio_diario });
-                }
-
-              
-
-                
-            });
-
-
-        }); 
-
     }else{
         try{
         var dvListx= document.getElementById('dvListPDVs');
@@ -2530,7 +2514,8 @@ function getVentaSugerida(id_pdv, vIdQ){
     }
 }
 
-function getVentaEstimada(id_pdv, vIdQ){
+/*
+function getVentaEstimada(id_pdv){
 
     obj=null
 
@@ -2581,12 +2566,69 @@ function getVentaEstimada(id_pdv, vIdQ){
 
 }// fin del funcion
 
+*/
 function setPDVFordis(vIdPDV){
     //Aqui se ejecuta el set del IDPDV;
     obj = document.getElementById('Q2');
     obj.value = vIdPDV;
-     $("#Q2").trigger('change');
+    vIdPdvG = vIdPDV;
+
+    vQuery = '';
+    vMontoSugerido = 0;
+    vMontoEstimado = 0;
+    var fecha = new Date();
+    var dia = fecha.getDay();
+
+     //$("#Q2").trigger('change');
     findPDVFordis(1);
+    setTimeout(() => {
+        if (vIdFormulario =='FORDIS04'){
+            //set Venta sugerida        
+            db.transaction(function(cmd2){
+                
+                vQuery = "SELECT a.anio, a.semana, a.id_pdv, a.mon, a.mar, a.mie, a.jue, a.vie, a.sat, a.dom, a.promedio_diario";
+                vQuery +=  "  FROM tbl_fordis04_venta_sugerida a ";
+                vQuery +=  "  where a.id_pdv='" + parseInt(vIdPdvG) + "'";
+                //console.log(vQuery);
+                cmd2.executeSql(vQuery, null,function (cmd2, results) {
+                    console.log(results.rows);
+                    var len = results.rows.length;
+                    if (len > 0) {
+                        
+                        vMontoSugerido = parseInt(results.rows[0].promedio_diario);
+                        switch(dia){
+                            case 0:  // domingo
+                            vMontoEstimado = parseInt(results.rows[0].dom) ;
+                            break;        
+                            case 1: // lunes 
+                            vMontoEstimado = parseInt(results.rows[0].mon) ;
+                            break;        
+                            case 2: // martes
+                            vMontoEstimado = parseInt(results.rows[0].mar) ;
+                            break;        
+                            case 3: // miercoles
+                            vMontoEstimado = parseInt(results.rows[0].mie) ;
+                            break;        
+                            case 4: // jueves
+                            vMontoEstimado = parseInt(results.rows[0].jue) ;
+                            break;        
+                            case 5: // viernes
+                            vMontoEstimado = parseInt(results.rows[0].vie) ;
+                            break;        
+                            case 6: // sabado
+                            vMontoEstimado = parseInt(results.rows[0].sat) ;
+                            break;            
+                        } // fin del switch 
+                        alert("* PDV "+ vIdPdvG+" *\nMonto Sugerido: L. " + vMontoSugerido + "\nMonto Estimado: L. " + vMontoEstimado + "\n");
+                    }                  
+                    /*
+                    for(var i=0;i<len; i++){
+                        vVentaSugerida.push({anio:results.rows[i].anio, semana:results.rows[i].semana, id_pdv:results.rows[i].id_pdv, mon:results.rows[i].mon, mar:results.row[i].mar, mie:results.row[i].mie, jue:results.row[i].jue, vie:results.row[i].vie, sat:results.rows[i].sat, dom:results.row[i].dom, promedio_diario:results.row[i].promedio_diario });
+                    }*/
+                });
+            }); 
+        }
+    }, 500);
 }
 
 function changCircSearchPlan(vobj){
