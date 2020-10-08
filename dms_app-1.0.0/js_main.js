@@ -2502,7 +2502,7 @@ function getMontoCredito(id_pdv, vIdQ){
         }            
     }
 }
-
+/*
 function getVentaSugerida(id_pdv, vIdQ){
     obj=null
     for(i=0;i<vVentaSugerida.length;i++){
@@ -2514,7 +2514,7 @@ function getVentaSugerida(id_pdv, vIdQ){
     }
 }
 
-/*
+
 function getVentaEstimada(id_pdv){
 
     obj=null
@@ -2591,7 +2591,7 @@ function setPDVFordis(vIdPDV){
                 vQuery +=  "  where a.id_pdv='" + parseInt(vIdPdvG) + "'";
                 //console.log(vQuery);
                 cmd2.executeSql(vQuery, null,function (cmd2, results) {
-                    console.log(results.rows);
+                    //console.log(results.rows);
                     var len = results.rows.length;
                     if (len > 0) {
                         
