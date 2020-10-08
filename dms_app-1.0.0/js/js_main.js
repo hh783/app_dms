@@ -8,8 +8,8 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
-var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
-//var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
+//var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
+var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
 //var ws_url = 'https://192.168.161.20/ws_so/service_so.php'; 
 
 var vMontoCredito = [];
