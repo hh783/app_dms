@@ -2619,7 +2619,7 @@ function setPDVFordis(vIdPDV){
                             vMontoEstimado = parseInt(results.rows[0].sat) ;
                             break;            
                         } // fin del switch 
-                        alert("* PDV "+ vIdPdvG+" *\nVenta Epin Promedio Semanal:\n L. " + vMontoSugerido + "\nVenta Epin Sugerida del día:\n L. " + vMontoEstimado + "\n");
+                        alert("* PDV "+ vIdPdvG+" *\nVenta ePin Promedio Semanal:\n L. " + vMontoSugerido + "\nVenta ePin Sugerida del día:\n L. " + vMontoEstimado + "\n");
                     }                  
                     /*
                     for(var i=0;i<len; i++){
