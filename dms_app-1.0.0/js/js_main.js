@@ -8,8 +8,8 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
-//var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
-var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
+var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
+//var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
 //var ws_url = 'https://192.168.161.20/ws_so/service_so.php'; 
 
 var vMontoCredito = [];
@@ -34,7 +34,7 @@ var vIdPdvG // variable para fordis04
 var lat1, lng1;
 var vDistance = 0;
 var vFechIniHorus;
-
+var listSeries = [];
 //var webSvrListener =  setInterval(function(){ consultSVR()}, 59000);
 var pagRoot = [{id:0, back:0},
                 {id:1, back:0},
@@ -485,6 +485,10 @@ function hide_pags(){
         $("#finderPDv1").val('');
         var dvListx= document.getElementById('dvListPDVs');
         document.getElementById('dv_forms_template').removeChild(dvListx);
+
+         $("#finderSimcard1").val('');
+        var dvLSimcardx= document.getElementById('dvListSimcard');
+        document.getElementById('dv_forms_template').removeChild(dvLSimcardx);
     }catch(e){null};
 }
 
@@ -1199,9 +1203,14 @@ function drawObject(vTipo, vId, vNombre, vOptions, vfunc){
         case 201:
             vStr += '<br /><center><button id="'+ vId +'" onclick="'+ vfunc + '" data-theme="b" style="width:60%">'+ vNombre +'</button></center>';
         break;
+         case 202:
+            vStr += '<br /><center><button id="'+ vId +'" onclick="'+ vfunc + '" data-theme="b" style="width:60%">'+ vNombre +'</button></center>';
+        break;
     }    
     return vStr;
 }
+
+
 
 // Fumcion para obtener formularios del servidor
 function updateForms(){
@@ -1344,9 +1353,29 @@ function formsPendientes(){
 function envioFormsPend(){
     var contForms = 0;
     var contRegs = 0;
+    var idFordis;
+    var idForm;
+    var arrSr = [];
+
+
     for(i=0; i<vFormsPendientes.length; i++){
         $.mobile.loading('show');
         //console.log(vFormsPendientes); 
+        idForm = vFormsPendientes[0].id_form.split('_');
+
+        if(idForm[0]=='PFORDIS04'){
+            db.transaction(function(cmd){   
+                cmd.executeSql('SELECT * FROM tbl_series_tangibles_br where id_fordis =?', [vFormsPendientes[0].id_form], function (cmd, results) {
+                    var len = results.rows.length;
+                    for(i=0;i<len;i++){
+                        arrSr.push({serie:results.rows[i].serie, usuario:results.rows[i].usuario, id_fordis:results.rows[i].id_fordis, id_pdv:results.rows[i].id_pdv});
+                    }
+                    //console.log(arrSr);
+                    sendSerieTangible(arrSr);
+                });
+            });
+        }
+        
 
         $.ajax({
             url:ws_url,
@@ -1466,7 +1495,11 @@ function continuarForms(){
 }
 
 function envioForm(){
+    var vForm = vFormData[0].id_form.split('_');
+    var objDtos = JSON.parse(vFormData[0].vdata);
+    var arrDatosS = [];
 
+    //console.log(listSeries);
     $.ajax({
             url:ws_url,
             type:'POST',
@@ -1499,6 +1532,15 @@ function envioForm(){
                     });
                     setTimeout(function(){  $.mobile.loading('hide'); backButton(); }, 1200);
                 }
+
+
+                if(vForm[0]=='PFORDIS04'){
+                    for(let vX of listSeries){
+                        arrDatosS.push({serie:vX.serie, usuario:vDatosUsuario.user, id_fordis:vFormData[0].id_form,id_pdv:objDtos[1].r});
+                    }
+                    //console.log(arrDatosS);
+                    sendSerieTangible(arrDatosS);
+                }
                 
 
             }, 
@@ -1515,16 +1557,31 @@ function envioForm(){
                 vQuery += vFormData[0].lat + ','+ vFormData[0].lng  +')';
                 ejecutaSQL(vQuery, 0);
 
+                if(vForm[0]=='PFORDIS04'){
+                    for(let vX of listSeries){
+                        ejecutaSQL("insert into tbl_series_tangibles_br (serie, usuario, id_fordis,id_pdv) values('" + vX.serie + "','" + vDatosUsuario.user  + "','" + vFormData[0].id_form  + "'," + objDtos[1].r + ")", 0);
+                    }
+                    for(let vX of listSeries){
+                        ejecutaSQL("delete from tbl_series_tangibles  where serie = '"+ vX.serie + "'", 0);
+                    }
+                }
+
                 setTimeout(function(){  
                     $.mobile.loading('hide'); 
                     backButton();
                 }, 2000);
             }
         });  
+    
+
     //}, 4000);       
 }
 
 function guardarForm(){
+
+
+    var vForm = vFormData[0].id_form.split('_');
+    var objDtos = JSON.parse(vFormData[0].vdata);
 
     $.mobile.loading( 'show', {
         text: '',
@@ -1540,6 +1597,16 @@ function guardarForm(){
     vQuery += 'VALUES(\'' +  vFormData[0].id_form + '\',\'' + (vFormData[0].vdata).toString() + '\',' + vFormData[0].fech + ',0,';
     vQuery += vFormData[0].lat + ','+ vFormData[0].lng  +')';
     ejecutaSQL(vQuery, 0);
+
+     if(vForm[0]=='PFORDIS04'){
+        for(let vX of listSeries){
+            ejecutaSQL("insert into tbl_series_tangibles_br (serie, usuario, id_fordis,id_pdv) values('" + vX.serie + "','" + vDatosUsuario.user  + "','" + vFormData[0].id_form  + "'," + objDtos[1].r + ")", 0);
+        }
+        for(let vX of listSeries){
+            ejecutaSQL("delete from tbl_series_tangibles  where serie = '"+ vX.serie + "'", 0);
+        }
+        //console.log(arrDatosS);
+    }
 
     $.mobile.loading( 'show', {
         text: 'Guardado Exitosamente',
@@ -1719,7 +1786,35 @@ function getFileToServer(vFileId){
     });  
 }
 
+function sendSerieTangible(vArDatos){
 
+    var result;
+    var strImg = '';
+    //console.log(vArDatos);
+    $.ajax({
+        url:ws_url,
+        type:'POST',
+        data:{m:315,vx:userWS, vy:pdwWS, ar_items:vArDatos},        
+        dataType:'text',
+        success: function(data){
+            //result = eval(data);
+            console.log(data);
+            if(data=='SUCCESS/'){                   
+                setTimeout(function(){
+                    for(let vX of vArDatos){
+                        ejecutaSQL('DELETE FROM tbl_series_tangibles where serie=\'' + vX.serie + '\'', 0);
+                        ejecutaSQL('DELETE FROM tbl_series_tangibles_br where serie=\'' + vX.serie + '\'', 0);
+                    } 
+                }, 1000);
+            }else{
+                alert('Error Enviando Series..');
+            }            
+        }, 
+        error: function(error){
+            console.log(error);
+        }
+    });  
+}
 
 function reporteVentas(vaniomes){
 
@@ -2170,7 +2265,37 @@ function sendCierreVtas(){
         });  
 }
 
+function getseries(){
+    var vResult;
+    var fech = getYMD(0);
+    var vQry= '';
 
+  $.mobile.loading('show');
+
+    $.ajax({
+            url:ws_url,
+            type:'POST',
+            data:{m:311,vx:userWS, vy:pdwWS, usuario:vDatosUsuario.user.toUpperCase()},        
+            dataType:'json',
+            success: function(data){
+                console.log(data);
+                var json = eval(data);
+                if( json.length>0 ){    
+                    //alert(JSON.stringify(json));            
+                    ejecutaSQL('delete from tbl_series_tangibles', 0);                    
+                    for(var i=0; i<json.length; i++){                        
+                        ejecutaSQL('insert into tbl_series_tangibles (serie, usuario, modelo, descripcion, fecha_descarga, precio, tipo) values("'+json[i].serie+'","'+json[i].usuario+'","'+json[i].modelo+'","'+json[i].descripcion_modelo+'","'+fech+'",'+json[i].precio+',"'+json[i].tipo+'")',0);                                                         
+                        //ejecutaSQL('insert into tbl_series_tangibles (serie, usuario, modelo, descripcion, fecha_descarga, precio, tipo) values("'+json[i].serie+'","'+json[i].usuario+'","'+json[i].modelo+'","'+json[i].descripcion_modelo+'","'+fech+'",1,"NA")',0);                                                         
+                    }                       
+                    setTimeout(function(){$.mobile.loading('hide'), alert('Series Actualizadas Correctamente'); },3000);                       
+                }               
+            },error: function(error){
+                console.log(error);
+                $.mobile.loading('hide');
+            }
+    });
+
+   } 
 function getPlanningDMS(){
     var vResult;
     var weekNum;
@@ -2202,9 +2327,29 @@ function getPlanningDMS(){
                 $.mobile.loading('hide');
             }
     });
-
-    
-
+    /*
+        $.ajax({
+            url:ws_url,
+            type:'POST',
+            data:{m:311,vx:userWS, vy:pdwWS, usuario:vDatosUsuario.user.toUpperCase()},        
+            dataType:'json',
+            success: function(data){
+                console.log(data);
+                var json = eval(data);
+                
+                if( json.length>0 ){                    
+                    ejecutaSQL('delete from tbl_sim_card_br', 0);                    
+                    for(var i=0; i<json.length; i++){                        
+                        ejecutaSQL('insert into tbl_sim_card_br (serie, id_employee) values("'+json[i].serie+'","'+json[i].id_employee+'")',0);                                                         
+                    }                       
+                    setTimeout(function(){$.mobile.loading('hide')},3000);                       
+                }               
+            },error: function(error){
+                console.log(error);
+                $.mobile.loading('hide');
+            }
+    });
+*/
     $.ajax({
             url:ws_url,
             type:'POST',
@@ -2401,12 +2546,45 @@ function funcTblFindPdv() {
     }       
   }
 }
-
+function funcTblSimcard() { //HECTOR PRUEBA
+  var input, filter, table, tr, td, i;
+  input = document.getElementById("finderSimcard1");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("SimcardTble1");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[3];
+    if (td) {
+      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
 function funcTblFindPdv2() {
   var input, filter, table, tr, td, i;
   input = document.getElementById("finderPDv2");
   filter = input.value.toUpperCase();
   table = document.getElementById("pdvsTble2");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[3];
+    if (td) {
+      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+function funcTblFindSimcard2() { //HECTOR PRUEBA
+  var input, filter, table, tr, td, i;
+  input = document.getElementById("finderSimcard2");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("SimcardTble2");
   tr = table.getElementsByTagName("tr");
   for (i = 0; i < tr.length; i++) {
     td = tr[i].getElementsByTagName("td")[3];
@@ -2439,7 +2617,10 @@ function findPDVFordis(vFlag){
 
         setTimeout(function(){$.mobile.loading('show');},100);
 
-        db.transaction(function(cmd){   
+        db.transaction(function(cmd){
+            
+            console.log(cmd);
+            
             cmd.executeSql('SELECT distinct id_pdv, nombre_pdv, nombre_circuito, monto_credito FROM tbl_plan_dms where aniomes=? order by nombre_circuito,nombre_pdv', [parseInt(fech_dtos)], function (cmd, results) {
                 var len = results.rows.length;
                 //alert(len);
@@ -2488,6 +2669,114 @@ function findPDVFordis(vFlag){
     }
 
 }
+
+
+function findSimcard(vFlag,vCantSim){ //linea 2513
+    var vHtml = '';
+    var fech_dtos = getYMD(0).substr(0,6);
+  
+    
+       if(vFlag==0){ 
+   
+        setTimeout(function(){$.mobile.loading('show');},100);
+
+        cargarSims();
+
+        console.log("Se ejecuta consulta sql");
+
+  db.transaction(function(cmd){
+      
+
+           cmd.executeSql('SELECT distinct serie FROM tbl_sim_card_br order by serie',[] ,function (cmd, results) {
+                var len = results.rows.length;
+                
+
+                    console.log(results);
+
+                   // vStrHtml = '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="findSimcard(1)">Cerrar</button><h3>Simcards</h3>';
+                   // vStrHtml += '<input type="search" id="findSimcard2" onkeyup="funcTblSimcard2()" placeholder="serie simcard"/>';
+                   /* vStrHtml += '<label>Circuito</label><select id="cbCirPlanPDV" onchange="changCircSearchPlan(this)" data-mini="true">';
+                    vStrHtml += '<option value="">-</option>'
+                    for(k=0;k<vCircuitos.length;k++){
+                        vStrHtml += '<option value="'+ vCircuitos[k] +'">'+vCircuitos[k]+'</option>';
+                    }
+                    */
+                    vStrHtml = '</select>';
+                    vStrHtml += '<table id="SimcardTble2" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
+                    vStrHtml += '<thead><tr><th width="5%">#</th><th width="10%">Serie Simcard</th></tr></thead>';
+                    vStrHtml += '<tbody>';   
+                 
+                      for(i=0; i<len; i++){  
+
+                        if(vCantSim > i){
+
+                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td><a ('+ results.rows[i].serie +')">'+ results.rows[i].serie +'</a></td>';
+
+                           }
+
+                       // alert("* PDV "+ vIdPdvG+" *\nserie:\n L. " + results.rows[i].serie ); 
+                    }   
+                        
+                     vStrHtml += '</tbody> </table><br/><br/>';
+              // dvList.innerHTML=vStrHtml; 
+
+                setTimeout(function(){ $.mobile.loading('hide'); }, 1500);    
+                 
+                   Swal.fire({
+        title:'Codigo generado!',
+        text:'Su codigo ha sido enviado al numero ingresado',
+        html: '<html> '+ vStrHtml +'  </html>',
+        icon:'success',
+        showConfirmButton: false
+      })
+               // document.getElementById('dv_forms_template').appendChild(dvList);
+              //   $("#dvListSimcard").css({"left":"-1%","padding":"3%", "width":"96%", "height":h,"background-color":"white","position":"fixed","top":10,"z-index":999,
+                                    //    "opacity":1, "overflow":"scroll"});
+               // $("#dvListSimcard").trigger('create');
+              //  setTimeout(function(){ $.mobile.loading('hide'); }, 1500);       
+
+});
+          });
+
+
+  }else{
+        try{
+        var dvListx= document.getElementById('dvListSimcard');
+        document.getElementById('dv_forms_template').removeChild(dvListx);
+        }catch(e){null};
+    }
+}
+
+
+function cargarSims(){
+
+    $.ajax({
+        async:false,
+        url:ws_url,
+        type:'POST',
+        data:{m:311,vx:userWS, vy:pdwWS, usuario:vDatosUsuario.user.toUpperCase()},        
+        dataType:'json',
+        success: function(data){
+            console.log(data);
+            var json = eval(data);
+            
+            if( json.length>0 ){                    
+                ejecutaSQL('delete from tbl_sim_card_br', 0);                    
+                for(var i=0; i<json.length; i++){                        
+                    ejecutaSQL('insert into tbl_sim_card_br (serie) values("'+json[i].serie+'")',0); 
+                    // ejecutaSQL('insert into tbl_sim_card_br (serie) values("'+json[i].serie+'","'+json[i].usuario+'")',0);                                                              
+                }                       
+                setTimeout(function(){$.mobile.loading('hide')},3000);                       
+            }               
+        },error: function(error){
+            console.log(error);
+            $.mobile.loading('hide');
+        }
+});
+
+}
+
+
 
 function getMontoCredito(id_pdv, vIdQ){
     obj=null;
@@ -3531,3 +3820,217 @@ function sendMarksE() {
 
         });
 }
+
+
+function  scaner_list(vFlag){  
+    var vSerie='';  
+    var vUsr = vDatosUsuario.user;
+    var objSerie;
+    var vSerie = [];
+
+    if(vFlag==0){
+        listSeries=[];
+    }
+    //vUsr ='APP.DMS.WILLIAM.NUNEZ';
+    
+    /*vSerie = ['12001940004032','12003150015400','12003360024808','11903850020848','12002980005128','12001240014248','12001890041208',
+    '12001940004032', '8950402316517297588','353574624853435'];
+    console.log(vUsr);
+    */
+    
+    cordova.plugins.barcodeScanner.scan(
+    function (result) {
+        /*alert("We got a barcode\n" +
+                "Result: " + result.text + "\n" +
+                "Format: " + result.format + "\n" +
+                "Cancelled: " + result.cancelled);*/
+
+
+        if(result.cancelled == false) 
+        { 
+            //alert(result.text);                   
+            vSerie.push(result.text);
+            for(let x of vSerie){
+                db.transaction(function(cmd){   
+                cmd.executeSql("SELECT * FROM tbl_series_tangibles where serie = ?", [x], function (cmd, results) {
+                        var len = results.rows.length, i;                    
+                        i = 0;        
+                        //console.log(vSerie + '/' + len);        
+                        if(len > 0){
+                            for(i=0;i<len;i++){
+                                objSerie = {"serie":results.rows.item(i).serie, "precio":results.rows.item(i).precio, "modelo":results.rows.item(i).modelo, "desc":results.rows.item(i).descripcion, "tipo":results.rows.item(i).tipo};
+                                break;
+                            }
+                            listSeries.push(objSerie);                    
+                        }else{
+                            alert('Serie no encontrada');
+                        }
+                        showlistSeries(0);
+                    });
+                });
+        
+            }
+        }else{
+            console.log('Scan Done');
+        }
+    },
+    function (error) {
+        alert("Scanning failed: " + error);
+    }); 
+}
+
+function showlistSeries(vFlag){
+    vStrHtml = '';
+    console.log('Scanning');
+
+    try{
+    var dvListx= document.getElementById('dvListPDVs');
+    document.getElementById('dv_forms_template').removeChild(dvListx);
+    }catch(e){null};
+    var h = $(window).height();
+    var dvList = document.createElement('div');
+    dvList.id = 'dvListPDVs';
+
+    if(vFlag==0)
+    {
+        vStrHtml += '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="showlistSeries(1)">Cerrar</button><h3>Listado Series</h3>';
+        vStrHtml += '<table id="pdvsTble2" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
+        vStrHtml += '<thead><tr><th width="50%" data-priority="0">Serie</th><th data-priority="0">Descripcion</th><th data-priority="3">Precio</th></tr></thead>';
+        vStrHtml += '<tbody>';                  
+        for(let rowx of listSeries){
+        //console.log(rowx);
+            vStrHtml += '<tr><td width="40%">'+ rowx.serie +'</td><td>'+ rowx.desc +'</td><td>'+ rowx.precio +'</td></tr>';                    
+        }                 
+        vStrHtml += '</tbody> </table><br /><br /><button style="width:100px; height:30px; padding:0px" onclick="scaner_list(1)">Scanner</button>';
+        vStrHtml += '<button style="width:100px; height:30px; padding:0px; float:right" onclick="continueSerie()">Continuar</button>';
+        vStrHtml += '<br/><br/><br/><br/>';
+
+        dvList.innerHTML=vStrHtml;  
+        document.getElementById('dv_forms_template').appendChild(dvList);
+        $("#dvListPDVs").css({"left":"-1%","padding":"3%", "width":"96%", "height":h,"background-color":"white","position":"fixed","top":10,"z-index":999,
+                                "opacity":1, "overflow":"scroll"});
+        $("#dvListPDVs").trigger('create');
+
+    }else{
+        try{
+        listSeries = [];
+        var dvListx= document.getElementById('dvListPDVs');
+        document.getElementById('dv_forms_template').removeChild(dvListx);
+        }catch(e){null};
+    }
+
+    //setTimeout(function(){ $.mobile.loading('hide'); }, 1500);
+}
+
+function continueSerie(){
+    var smart=0;
+    var simcard=0;
+    var tarSR16=0;
+    var tarSR25=0;
+    var tarSR50=0;
+    var tarSR100=0;
+    var tarR25=0;
+    var tarR50=0;
+    var tarR100=0;
+    var subTotTar = 0;
+    var subTotTarSR = 0;
+    var subToSim=0;
+    var subTotSmart=0;
+     var totalVenta=0;
+
+    var dvListx= document.getElementById('dvListPDVs');
+    document.getElementById('dv_forms_template').removeChild(dvListx);
+
+
+
+    console.log(listSeries);
+    for(let vRows of listSeries){   
+        //console.log(vRows);
+
+        switch(vRows.tipo){
+            case 'SMARTHPHONES':
+                subTotSmart += 999;
+                smart++;
+            break;
+            case 'SCRATCHCARD':                
+                if(vRows.modelo=='DOT075')
+                {
+                    tarSR16+=8;
+                    subTotTarSR += 16*8; //vRows.precio
+
+
+                }if(vRows.modelo=='DOT073')
+                {
+                    tarSR100+=8
+                    subTotTarSR += 100*8;
+
+                }if(vRows.modelo=='DOT072')
+                {
+                    tarSR50+=8
+                    subTotTarSR += 50*8;
+
+                }if(vRows.modelo=='DOT071')
+                {
+                    tarSR25+=8
+                    subTotTarSR += 25*8;
+
+                }if(vRows.modelo=='DOT026')
+                {
+                    tarR50+=8
+                    subTotTar += 50*8;
+
+                }if(vRows.modelo=='DOT025')
+                {
+                    tarR25+=8
+                    subTotTar += 25*8;
+
+                }if(vRows.modelo=='DOT030')
+                {
+                    tarR100+=8
+                    subTotTar += 100*8;
+
+                }
+            break;
+            case 'SIMCARD':
+                subToSim += 10*3;
+                simcard += 3;
+            break;
+            case 'BLISTER':
+            break;
+        }
+    }
+   
+ //TOTAL
+   totalVenta =  subTotTar+subTotTarSR + subToSim + subTotSmart + subToSim ;
+
+    
+    //Super Recarga
+    $("#Q12").val(tarSR100);
+    $("#Q11").val(tarSR50);
+    $("#Q10").val(tarSR25);
+    $("#Q6").val(tarSR16);
+    //Recarga
+    $("#Q9").val(tarR100);
+    $("#Q8").val(tarR50);
+    $("#Q7").val(tarR25);
+    //Simcard
+     $("#Q13").val(simcard);
+     //Smartphone
+    $("#Q14").val(smart);
+    //SUBTOTAL
+    $("#Q15").val(subTotTar);
+    $("#Q16").val(subTotTarSR);
+    $("#Q17").val(subToSim);
+    $("#Q18").val(subTotSmart);
+    //TOTAL
+    $("#Q19").val(totalVenta);
+}
+
+/*
+DOT075  TIGOPK;3985;16;TARJETA VAS 16 MIN X L16.00(8 EN 1)
+DOT073  TIGOPK;3945;100;TARJETA SUPER RECARGA L100(8 EN 1)
+DOT072  TIGOPK;3944;50;TARJETA SUPER RECARGA L 50 (8 EN 1)
+DOT071  TIGOPK;3943;25;TARJETA SUPER RECARGA L 25 (8 EN 1)
+DOT026  TARJETAS PREPAGO DE LPS 50.00 ( 8 EN 1 )          
+DOT025  TARJETAS PREPAGO DE LPS 25.00 ( 8 EN 1 )          
+DOT030  TARJETAS PREPAGO DE LPS 100.00 (8 EN 1)           */
