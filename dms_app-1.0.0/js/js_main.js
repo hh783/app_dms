@@ -8,7 +8,7 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
-//var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
+/*var ws_url = 'https://190.4.63.207/ws_so/service_so.php'; */
 var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
 //var ws_url = 'https://192.168.161.20/ws_so/service_so.php'; 
 
@@ -1488,6 +1488,7 @@ function continuarForms(){
             listSeriesFinal.push(srs)
         }
         count_series = listSeriesFinal.length;
+		 listSeries = {SIMCARDS:[],SMART:[],SCRATCH_SR_16:[],SCRATCH_TP_25:[],SCRATCH_TP_50:[],SCRATCH_TP_100:[],SCRATCH_SR_25:[],SCRATCH_SR_50:[],SCRATCH_SR_100:[],BLIS:[]};
     }
     //console.log(listSeriesFinal);
 
@@ -1557,7 +1558,7 @@ function continuarForms(){
         vFormData = tempForm;
         ////console.log(vFormData[0].id_form);
         prevForm(vFormData[0].id_form, 1);
-        listSeries = {SIMCARDS:[],SMART:[],SCRATCH_SR_16:[],SCRATCH_TP_25:[],SCRATCH_TP_50:[],SCRATCH_TP_100:[],SCRATCH_SR_25:[],SCRATCH_SR_50:[],SCRATCH_SR_100:[],BLIS:[]};
+      //  listSeries = {SIMCARDS:[],SMART:[],SCRATCH_SR_16:[],SCRATCH_TP_25:[],SCRATCH_TP_50:[],SCRATCH_TP_100:[],SCRATCH_SR_25:[],SCRATCH_SR_50:[],SCRATCH_SR_100:[],BLIS:[]};
     }, 4000);
     }catch(e){
         //console.log(e);
@@ -1714,6 +1715,7 @@ function envioForm(){
                         ejecutaSQL("delete from tbl_series_tangibles  where serie = '"+ vX + "'", 0);
                        // listSeriesFinal = '';
                     }
+					
                 }
 
                 setTimeout(function(){  
@@ -1940,17 +1942,18 @@ function sendSerieTangible(vArDatos){
 
     var result;
     var strImg = '';
-    ////console.log(vArDatos);
+	//console.log(vArDatos);
     $.ajax({
         url:ws_url,
         type:'POST',
         data:{m:315,vx:userWS, vy:pdwWS, ar_items:vArDatos},        
         dataType:'text',
         success: function(data){
-            //result = eval(data);
-            //console.log(data);
+			console.log(data);
+            //result = eval(data);         
             if(data=='SUCCESS/'){                   
                 setTimeout(function(){
+					//console.log(vArDatos);
                     for(let vX of vArDatos){
                         ejecutaSQL('DELETE FROM tbl_series_tangibles where serie=\'' + vX.serie + '\'', 0);
                         ejecutaSQL('DELETE FROM tbl_series_tangibles_br where serie=\'' + vX.serie + '\'', 0);
@@ -3000,7 +3003,8 @@ function findSimcard(vFlag,vCantSim){ //linea 2513
 
 
                 }else{
-                    alert('No tienes Suficientes series ' +  len);
+                    alert('No tienes suficientes series asignadas, tienes: ' +  len);
+					setTimeout(function(){ $.mobile.loading('hide'); }, 500);  
                 }
                     //showlistSeries(0);
                 
@@ -4244,6 +4248,7 @@ function  scaner_list(vFlag){
     
     cordova.plugins.barcodeScanner.scan(
     function (result) {
+		flag = 0;
         /*alert("We got a barcode\n" +
                 "Result: " + result.text + "\n" +
                 "Format: " + result.format + "\n" +
@@ -4254,24 +4259,37 @@ function  scaner_list(vFlag){
         { 
             //alert(result.text);                   
             vSerie.push(result.text);
+			
             for(let x of vSerie){
-                db.transaction(function(cmd){   
-                cmd.executeSql("SELECT * FROM tbl_series_tangibles where serie = ?", [x], function (cmd, results) {
-                        var len = results.rows.length, i;                    
-                        i = 0;        
-                        ////console.log(vSerie + '/' + len);        
-                        if(len > 0){
-                            for(i=0;i<len;i++){
-                                objSerie = {"serie":results.rows.item(i).serie, "precio":results.rows.item(i).precio, "modelo":results.rows.item(i).modelo, "desc":results.rows.item(i).descripcion, "tipo":results.rows.item(i).tipo};
-                                break;
-                            }
-                            listSeries.SMART.push(objSerie);                    
-                        }else{
-                            alert('Serie no encontrada');
-                        }
-                        showlistSeries(0);
-                    });
-                });
+				
+				for(let xs of listSeries.SMART){
+					if(x==xs.serie){
+						flag=1;
+						break;
+					}
+				}
+				
+				if(flag==0){					
+					db.transaction(function(cmd){   
+					cmd.executeSql("SELECT * FROM tbl_series_tangibles where serie = ?", [x], function (cmd, results) {
+							var len = results.rows.length, i;                    
+							i = 0;        
+							////console.log(vSerie + '/' + len);        
+							if(len > 0){
+								for(i=0;i<len;i++){
+									objSerie = {"serie":results.rows.item(i).serie, "precio":results.rows.item(i).precio, "modelo":results.rows.item(i).modelo, "desc":results.rows.item(i).descripcion, "tipo":results.rows.item(i).tipo};
+									break;
+								}
+								listSeries.SMART.push(objSerie);                    
+							}else{
+								alert('Serie no encontrada');
+							}
+							showlistSeries(0);
+						});
+					});					
+				}else{
+					alert('Serie Duplicada..');
+				}
         
             }
         }else{
