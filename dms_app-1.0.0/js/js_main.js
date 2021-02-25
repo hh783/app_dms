@@ -4317,11 +4317,11 @@ function showlistSeries(vFlag){
     {
         vStrHtml += '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="showlistSeries(1)">Cerrar</button><h3>Listado Series</h3>';
         vStrHtml += '<table id="pdvsTble2" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-        vStrHtml += '<thead><tr><th width="50%" data-priority="0">Serie</th><th data-priority="0">Descripcion</th></tr></thead>';
+        vStrHtml += '<thead><tr><th width="35%" data-priority="0">Serie</th><th data-priority="0">Modelo</th><th data-priority="0">Descripcion</th></tr></thead>';
         vStrHtml += '<tbody>';                  
         for(let rowx of listSeries.SMART){
         ////console.log(rowx);
-            vStrHtml += '<tr><td width="40%">'+ rowx.serie +'</td><td>'+ rowx.desc +'</td></tr>';                    
+            vStrHtml += '<tr><td width="40%">'+ rowx.serie +'</td><td>'+ rowx.modelo +'</td><td>'+ rowx.desc +'</td></tr>';                    
         }                 
         vStrHtml += '</tbody> </table><br /><br /><button style="width:100px; height:30px; padding:0px" onclick="scaner_list(1)">Escanear</button>';
         vStrHtml += '<button style="width:100px; height:30px; padding:0px;" onclick="showSmart(0)">Buscar </button>';
@@ -4497,7 +4497,7 @@ function showSmart(vFlag){
             
             //console.log(cmd);
             
-            cmd.executeSql('SELECT serie, descripcion FROM tbl_series_tangibles where tipo = ?  order by serie', ['SMARTHPHONES'], function (cmd, results) {
+            cmd.executeSql('SELECT serie, modelo, descripcion FROM tbl_series_tangibles where tipo = ?  order by serie', ['SMARTHPHONES'], function (cmd, results) {
                 var len = results.rows.length;
                 
                 if(len>0){  
@@ -4508,10 +4508,10 @@ function showSmart(vFlag){
                     vStrHtml += '<input type="search" id="finderSmart" onkeyup="funcTblFindSmart()" placeholder="Ingresar Modelo de Smartphone"/>';
                   
                     vStrHtml += '<table id="smartTble1" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-                    vStrHtml += '<thead ><tr><th width="5%">#</th><th width="45%">Serie</th><th class="table-stripe ui-responsive data-priority="2" width="50%">Modelo</th></tr></thead>';
+                    vStrHtml += '<thead ><tr><th width="5%">#</th><th width="35%">Serie</th><th class="table-stripe ui-responsive data-priority="2" width="20%">Modelo</th><th class="table-stripe ui-responsive data-priority="2" width="50%">Descripcion</th></tr></thead>';
                     vStrHtml += '<tbody>';                  
                     for(i=0; i<len; i++){                    
-                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td><a href="#" onclick="setSerieSmart(\''+ results.rows[i].serie +';'+ results.rows[i].descripcion  +'\')">'+ results.rows[i].serie +'</a></td><td>'+ results.rows[i].descripcion +'</td></tr>';
+                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td><a href="#" onclick="setSerieSmart(\''+ results.rows[i].serie +';'+ results.rows[i].modelo  +'\')">'+ results.rows[i].serie +'</a></td><td>'+ results.rows[i].modelo +'</td><td>'+ results.rows[i].descripcion +'</td></tr>';
                     }                
                 
                 vStrHtml += '</tbody> </table><br/><br/>';
