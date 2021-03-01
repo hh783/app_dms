@@ -1591,6 +1591,8 @@ function continuarForms(){
          if(varx!=cant )
          {
          msj += 'TP RECARGA L. 100\n';
+         console.log("array"+varx);
+         console.log("cant"+cant);
          }
 
          varx = $("#Q10").val();
@@ -1619,6 +1621,8 @@ function continuarForms(){
          if(varx!=cant )
          {
          msj += 'SIMCARDS\n';
+         console.log("array"+varx);
+         console.log("cant"+cant);
          }
 
          varx = $("#Q14").val();
@@ -1635,7 +1639,7 @@ function continuarForms(){
          msj += 'BLISTER\n';
          }
 
-            alert('Falta Cargar Series de:\n'+msj); //msj
+            alert('Tienes que cargar todas las series, favor cargar:\n'+msj); //msj
         }else{            
             alert('Error Generando Formulario');
         }
@@ -1960,7 +1964,7 @@ function sendSerieTangible(vArDatos){
                     } 
                 }, 1000);
             }else{
-                alert('Error Enviando Series..');
+                alert('No se enviaron series..');
             }            
         }, 
         error: function(error){
@@ -2441,15 +2445,21 @@ function getseries(){
                         ejecutaSQL('insert into tbl_series_tangibles (serie, usuario, modelo, descripcion, fecha_descarga, precio, tipo) values("'+json[i].serie+'","'+json[i].usuario+'","'+json[i].modelo+'","'+json[i].descripcion_modelo+'","'+fech+'",'+json[i].precio+',"'+json[i].tipo+'")',0);                                                         
                         //ejecutaSQL('insert into tbl_series_tangibles (serie, usuario, modelo, descripcion, fecha_descarga, precio, tipo) values("'+json[i].serie+'","'+json[i].usuario+'","'+json[i].modelo+'","'+json[i].descripcion_modelo+'","'+fech+'",1,"NA")',0);                                                         
                     }                       
-                    setTimeout(function(){$.mobile.loading('hide'), alert('Series Actualizadas Correctamente'); },3000);                       
+                    setTimeout(function(){$.mobile.loading('hide')},3000);   
+                    
+                    alert('Series Actualizadas Correctamente'); 
                 }               
             },error: function(error){
                 //console.log(error);
                 $.mobile.loading('hide');
+
+
             }
     });
 
-   } 
+   }
+   
+   
 function getPlanningDMS(){
     var vResult;
     var weekNum;
@@ -3253,7 +3263,7 @@ function setSerieSmart(vSerie){
         }
     }
     if(flag==0){
-        listSeries.SMART.push({serie:serieSplit[0], desc:serieSplit[1]});  
+        listSeries.SMART.push({serie:serieSplit[0],  modelo:serieSplit[1],desc:serieSplit[2]});  
         var dvListx= document.getElementById('dvListSmart');
         document.getElementById('dv_forms_template2').removeChild(dvListx);   
         $("#dv_forms_template2").hide();
@@ -4320,8 +4330,9 @@ function showlistSeries(vFlag){
         vStrHtml += '<thead><tr><th width="35%" data-priority="0">Serie</th><th data-priority="0">Modelo</th><th data-priority="0">Descripcion</th></tr></thead>';
         vStrHtml += '<tbody>';                  
         for(let rowx of listSeries.SMART){
-        ////console.log(rowx);
-            vStrHtml += '<tr><td width="40%">'+ rowx.serie +'</td><td>'+ rowx.modelo +'</td><td>'+ rowx.desc +'</td></tr>';                    
+        //console.log(rowx);
+            vStrHtml += '<tr><td width="40%">'+ rowx.serie +'</td><td>'+  rowx.modelo +'</td><td>'+ rowx.desc +'</td></tr>';  
+           // console.log(listSeries.SMART);                  
         }                 
         vStrHtml += '</tbody> </table><br /><br /><button style="width:100px; height:30px; padding:0px" onclick="scaner_list(1)">Escanear</button>';
         vStrHtml += '<button style="width:100px; height:30px; padding:0px;" onclick="showSmart(0)">Buscar </button>';
@@ -4499,6 +4510,7 @@ function showSmart(vFlag){
             
             cmd.executeSql('SELECT serie, modelo, descripcion FROM tbl_series_tangibles where tipo = ?  order by serie', ['SMARTHPHONES'], function (cmd, results) {
                 var len = results.rows.length;
+                console.log(results);
                 
                 if(len>0){  
                     
@@ -4511,7 +4523,7 @@ function showSmart(vFlag){
                     vStrHtml += '<thead ><tr><th width="5%">#</th><th width="35%">Serie</th><th class="table-stripe ui-responsive data-priority="2" width="20%">Modelo</th><th class="table-stripe ui-responsive data-priority="2" width="50%">Descripcion</th></tr></thead>';
                     vStrHtml += '<tbody>';                  
                     for(i=0; i<len; i++){                    
-                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td><a href="#" onclick="setSerieSmart(\''+ results.rows[i].serie +';'+ results.rows[i].modelo  +'\')">'+ results.rows[i].serie +'</a></td><td>'+ results.rows[i].modelo +'</td><td>'+ results.rows[i].descripcion +'</td></tr>';
+                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td><a href="#" onclick="setSerieSmart(\''+ results.rows[i].serie +';'+ results.rows[i].modelo  +';'+ results.rows[i].descripcion  +  '\')">'+ results.rows[i].serie +'</a></td><td>'+ results.rows[i].modelo +'</td><td>'+ results.rows[i].descripcion +'</td></tr>';
                     }                
                 
                 vStrHtml += '</tbody> </table><br/><br/>';
@@ -4522,7 +4534,7 @@ function showSmart(vFlag){
                 $("#dvListSmart").trigger('create');
                 }else{
                     $("#dv_forms_template2").hide();
-                    alert('No se Encontraron Series');
+                    alert('No tiene esta serie asignada');
                 }
                 setTimeout(function(){ $.mobile.loading('hide') },1000); 
             });
