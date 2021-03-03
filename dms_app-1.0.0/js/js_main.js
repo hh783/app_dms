@@ -2869,7 +2869,7 @@ function findSimcard(vFlag,vCantSim){ //linea 2513
             case 0:
                  listSeries.SIMCARDS =[];
                  vTipo = 'SIMCARD';
-                 vQuery = "SELECT * FROM tbl_series_tangibles where tipo = 'SIMCARD' order by serie";
+                 vQuery = "SELECT * FROM tbl_series_tangibles where modelo in ('SIM013','SIM018') order by serie";
                  vIdQ = 'Q13'; 
             break;
             case 1:
