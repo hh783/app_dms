@@ -8,8 +8,8 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
-var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
-//var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
+//var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
+var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
 //var ws_url = 'https://192.168.161.20/ws_so/service_so.php'; 
 
 var vMontoCredito = [];
@@ -2502,7 +2502,7 @@ function getMontoCredito(id_pdv, vIdQ){
         }            
     }
 }
-
+/*
 function getVentaSugerida(id_pdv, vIdQ){
     obj=null
     for(i=0;i<vVentaSugerida.length;i++){
@@ -2514,7 +2514,7 @@ function getVentaSugerida(id_pdv, vIdQ){
     }
 }
 
-/*
+
 function getVentaEstimada(id_pdv){
 
     obj=null
@@ -2591,7 +2591,7 @@ function setPDVFordis(vIdPDV){
                 vQuery +=  "  where a.id_pdv='" + parseInt(vIdPdvG) + "'";
                 //console.log(vQuery);
                 cmd2.executeSql(vQuery, null,function (cmd2, results) {
-                    console.log(results.rows);
+                    //console.log(results.rows);
                     var len = results.rows.length;
                     if (len > 0) {
                         
@@ -2619,7 +2619,7 @@ function setPDVFordis(vIdPDV){
                             vMontoEstimado = parseInt(results.rows[0].sat) ;
                             break;            
                         } // fin del switch 
-                        alert("* PDV "+ vIdPdvG+" *\nMonto Sugerido: L. " + vMontoSugerido + "\nMonto Estimado: L. " + vMontoEstimado + "\n");
+                        alert("* PDV "+ vIdPdvG+" *\nVenta ePin Promedio Semanal:\n L. " + vMontoSugerido + "\nVenta ePin Sugerida del día:\n L. " + vMontoEstimado + "\n");
                     }                  
                     /*
                     for(var i=0;i<len; i++){
