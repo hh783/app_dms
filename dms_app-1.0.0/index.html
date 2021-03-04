@@ -171,6 +171,7 @@
 
                     </center>
 
+                
                 </div> 
 
             </div><!-- Pagina 1 -->
@@ -389,6 +390,7 @@
 
             <div id="dvPlanningDMS" >
                 <div class="ui-body ui-body-a">
+                    <button onclick="getseries()">Actualizar series</button>
                     <button onclick="getPlanningDMS()">Actualizar Planning</button>
                     <label for="semanaAnio">Semana Num.</label>
                     <select id="cbSemanaNum" onchange="changeSemanaPlan(this)">
@@ -411,9 +413,15 @@
             </div>
 
 
+            
+            <div id="dv_forms_template2">
+                <div id="dv_forms_template_content2"></div>
+            </div>
+            
             <div id="dv_forms_template">
                 <div id="dv_forms_template_content"></div>
             </div>
+
 
             <div id="dvMainGerencial">
                 <label style="float:right; margin-top:15px; font-size:0.8em; color:blue; cursor:pointer" onclick="getDatosUsuario()">Actualizar</label>--
@@ -521,13 +529,16 @@
 <script type="text/javascript" src="js/highcharts.src.js"></script>
 <script type="text/javascript" src="js/highcharts-more.src.js"></script>
 <script src="https://code.highcharts.com/modules/variable-pie.js"></script>
-
+<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
 <script type="text/javascript" src="js/js_main.js"></script>
 <script type="text/javascript" src="js/js_db.js"></script>
 <!--<script type="text/javascript" src="js/toast.js"></script>-->
 <script type="text/javascript" src="cordova.js"></script>
-<script type="text/javascript">  
-   
+<script type="text/javascript">
+
+
+
+
     resizer();
     app.initialize();
 function resizer(){
