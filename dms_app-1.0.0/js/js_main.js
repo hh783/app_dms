@@ -8,7 +8,7 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
-/*var ws_url = 'https://190.4.63.207/ws_so/service_so.php'; */
+//var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
 var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
 //var ws_url = 'https://192.168.161.20/ws_so/service_so.php'; 
 
@@ -34,8 +34,7 @@ var vIdPdvG // variable para fordis04
 var lat1, lng1;
 var vDistance = 0;
 var vFechIniHorus;
-var listSeriesFinal = [];
-var listSeries = {SIMCARDS:[],SMART:[],SCRATCH_SR_16:[],SCRATCH_TP_25:[],SCRATCH_TP_50:[],SCRATCH_TP_100:[],SCRATCH_SR_25:[],SCRATCH_SR_50:[],SCRATCH_SR_100:[],BLIS:[]}
+
 //var webSvrListener =  setInterval(function(){ consultSVR()}, 59000);
 var pagRoot = [{id:0, back:0},
                 {id:1, back:0},
@@ -69,7 +68,7 @@ var app = {
         cordova.plugins.backgroundMode.on('activate',function(){
             if(vFlagTracking == true){
                 cordova.plugins.backgroundMode.disableWebViewOptimizations();
-        //        //console.log('..'); 
+        //        console.log('..'); 
                 //vInteDash = setInterval(function(){navigator.vibrate(25);}, vTimerGPS); 
             }         
         });
@@ -77,7 +76,7 @@ var app = {
         window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, 
             function (fs) {
                 fs.getDirectory('resources', { create: true }, function (fs2){
-                    ////console.log('Directorio - ' + fs2.name);
+                    //console.log('Directorio - ' + fs2.name);
                     /*fs2.getFile('log.txt', {create: true, exclusive: false}, 
                         function(fileEntry) {
                             alert('File creation successfull!');
@@ -98,7 +97,7 @@ var app = {
         });
 
         document.addEventListener('backbutton', function(e){
-            //console.log('..');
+            console.log('..');
             backButton();
        //     //window.plugins.toast.show('Back Bloq..', 1000, 'bottom');          
         });
@@ -178,15 +177,15 @@ $(document).ready(function(e){
                     i = 0;
 
                     if(len > 0 && vDateLicense > results.rows.item(0).license){
-                        ////console.log('Licencia Vencida');
-                        //console.log(results.rows.item(i).id);
+                        //console.log('Licencia Vencida');
+                        console.log(results.rows.item(i).id);
                         $.ajax( {type:'POST',
                                 url: ws_url,
                                 dataType:'json',
                                 data: {m:100,vx:userWS, vy:pdwWS, ui:results.rows.item(i).id, pw:results.rows.item(i).pwd},
                                 success: function(data){ 
                                     if(data[0].flag == 'false'){
-                                        //console.log('Log OK');
+                                        console.log('Log OK');
                                         vQuery = 'DELETE FROM users WHERE id = \'' + results.rows.item(i).id + '\'';
                                         ejecutaSQL(vQuery, 0);
                                         setTimeout(function(){window.location.replace('login.html');}, 800);
@@ -198,7 +197,7 @@ $(document).ready(function(e){
 
                                         vQuery = 'UPDATE users SET license = '+ data[0].vdatos[0].license +' WHERE id = \'' + results.rows.item(i).id + '\'';
                                         ejecutaSQL(vQuery, 0);
-                                        ////console.log(results.rows.item(i).name);
+                                        //console.log(results.rows.item(i).name);
                                         vDatosUsuario.user = results.rows.item(i).id;
                                         vDatosUsuario.login = 1;
                                         show_datos_user(vDatosUsuario.user);
@@ -219,7 +218,7 @@ $(document).ready(function(e){
 
                     }else if (len > 0){   
                         //window.location.replace('login.html');                         
-                        ////console.log('Loged In');
+                        //console.log('Loged In');
                         vDatosUsuario.user = results.rows.item(i).id;
                         vDatosUsuario.login = 1;
                         show_datos_user(vDatosUsuario.user);
@@ -245,8 +244,8 @@ $(document).ready(function(e){
                                         strUrl += results.rows.item(i).strdtos;
                                         arrFile.push({id_file:results.rows.item(i).id_file, nombre:results.rows.item(i).name, tipo:results.rows.item(i).type, corel:results.rows.item(i).correl, dtos:results.rows.item(i).strdtos});
                                     }
-                                    ////console.log(strUrl);
-                                    ////console.log('Img Loaded');
+                                    //console.log(strUrl);
+                                    //console.log('Img Loaded');
                                     //sendFileToServer(arrFile);
                                     if(strUrl.length<=10){
                                         getFileToServer(vDatosUsuario.user);
@@ -286,8 +285,8 @@ $(document).ready(function(e){
                             strUrl += results.rows.item(i).strdtos;
                             arrFile.push({id_file:results.rows.item(i).id_file, nombre:results.rows.item(i).name, tipo:results.rows.item(i).type, corel:results.rows.item(i).correl, dtos:results.rows.item(i).strdtos});          
                         }
-                        ////console.log(strUrl);                        
-                        ////console.log('Img Loaded');
+                        //console.log(strUrl);                        
+                        //console.log('Img Loaded');
                         //sendFileToServer(arrFile);                        
                         if(strUrl.length<=10){
                             getFileToServer(vDatosUsuario.user);
@@ -338,12 +337,12 @@ function chngFechaCierreVtas(ev){
 }
 
 function changeSemanaPlan(cbsem){
-    ////console.log(cbsem.value);
+    //console.log(cbsem.value);
     showPlanSemana(parseInt(cbsem.value), getYMD(0).toString().substr(0,6));
 }
 
 function show_datos_user(vUser){
-    //console.log(vUser);
+    console.log(vUser);
     
     db.transaction(function(cmd2){
         
@@ -381,7 +380,7 @@ function get_forms_info(){
     db.transaction(function(cmd2){
         cmd2.executeSql("SELECT status, count(1) as cant FROM tbl_forms_filled where substr(date,1,8) = ? group by status order by status", [getYMD(0)], function (cmd2, results) {
             var len = results.rows.length;
-            ////console.log(len);
+            //console.log(len);
             if(len>0){
                 for(i=0; i<len; i++){
                     if(results.rows.item(i).status == 0){
@@ -464,7 +463,6 @@ function hide_pags(){
     $("#dvDMS").hide();
     //$("#dvHead").hide();
     $('#dv_forms_template').hide();
-    $('#dv_forms_template2').hide();
     $("#formsRPT").hide();
     $("#dvReporteVentas").hide();
     $("#dvPlanningDMS").hide();
@@ -487,10 +485,6 @@ function hide_pags(){
         $("#finderPDv1").val('');
         var dvListx= document.getElementById('dvListPDVs');
         document.getElementById('dv_forms_template').removeChild(dvListx);
-
-         $("#finderSimcard1").val('');
-        var dvLSimcardx= document.getElementById('dvListSimcard');
-        document.getElementById('dv_forms_template').removeChild(dvLSimcardx);
     }catch(e){null};
 }
 
@@ -537,35 +531,35 @@ function saveImgtoDB(imgFile){
                 ctx.drawImage(img, 0, 0, wid, hei);
                 var dataurl = canvas.toDataURL("image/jpeg");
                 cant = (dataurl.length/4000).toFixed(2);
-                ////console.log(cant);
+                //console.log(cant);
                 arr_decimal = cant.split('.');
                 if(parseInt(arr_decimal[1])>0){
                     cant_rows = parseInt(arr_decimal[0]) + 1;
                 }else{
                     cant_rows = parseInt(arr_decimal[0]);
                 }
-                ////console.log(cant_rows);
+                //console.log(cant_rows);
 
                 for(i=1; i<=cant_rows; i++){
-                    ////console.log('From:' + (i-1)*4000 + ' To:'+ ((i*4000)-1));
-                    ////console.log(i +','+ vFile.name + ',' + dataurl.substring((i-1)*4000, ((i*4000)-1)));
+                    //console.log('From:' + (i-1)*4000 + ' To:'+ ((i*4000)-1));
+                    //console.log(i +','+ vFile.name + ',' + dataurl.substring((i-1)*4000, ((i*4000)-1)));
                     arrImg.push(dataurl.substring((i-1)*4000, (i*4000)));
                 }
-                ////console.log(arrImg);
+                //console.log(arrImg);
                 for(j=0;j<arrImg.length; j++){
                     strUrl += arrImg[j].replace('"', '');
                     arrStrUrl.push({user:vDatosUsuario.user, num:j, name:'imgUser', type:'jpeg', dtos:arrImg[j].replace('"', '')});
                     arrFile.push({id_file:vDatosUsuario.user, nombre:'imgUser', tipo:'jpeg', corel:j, dtos:arrImg[j].replace('"', '')});                              
                 }
 
-                ////console.log(strUrl.length +'-'+ dataurl.length);
-                ////console.log(strUrl);
+                //console.log(strUrl.length +'-'+ dataurl.length);
+                //console.log(strUrl);
                 ejecutaSQL('DELETE FROM tbl_files where id_file=\'' + arrStrUrl[0].user + '\'', 0)
                 setTimeout(function(){
                     for(i=0;i<arrStrUrl.length; i++){
                         vQry = 'INSERT INTO tbl_files (id_file, correl, name, type, strdtos) VALUES(';
                         vQry += '\'' + arrStrUrl[i].user + '\',' + arrStrUrl[i].num + ',\''  + arrStrUrl[i].name + '\',\'' + arrStrUrl[i].type + '\',\'' + arrStrUrl[i].dtos + '\')';                
-                        ////console.log(vQry);
+                        //console.log(vQry);
                         ejecutaSQL(vQry, 0); 
                     }
                     sendFileToServer(arrFile);
@@ -581,7 +575,7 @@ function backButton(){
     if(parseInt(pgActual) != 0){        
         for(i=0; i<pagRoot.length; i++){
             if(parseInt(pagRoot[i].id) == parseInt(pgActual)){
-                ////console.log(pgActual);
+                //console.log(pgActual);
                 switchMenu(pagRoot[i].id, pagRoot[i].back);
             }
         }
@@ -590,7 +584,7 @@ function backButton(){
 function switchMenu(vIdFrom, vIdTo){
     pgActual = vIdTo;
     pgBack = vIdFrom;
-    ////console.log('A-' + pgActual + '/B-' + pgBack);
+    //console.log('A-' + pgActual + '/B-' + pgBack);
 
     switch(vIdTo)
     {
@@ -651,7 +645,7 @@ function switchMenu(vIdFrom, vIdTo){
                         if(parseInt(aniomes)==parseInt(aniomesact)){
                             flag_mes_ac = 1;
                         }
-                        ////console.log(results.rows[0].semana_anio);                        
+                        //console.log(results.rows[0].semana_anio);                        
                         $('#anomesRVtas').append('<option value="' + results.rows[j].anomes + '">'+ results.rows[j].anomes +'</option>');
                         
                     }  
@@ -681,7 +675,7 @@ function switchMenu(vIdFrom, vIdTo){
                         if(weekDb==0){
                             weekDb=results.rows[j].semana_anio;
                         }
-                        ////console.log(results.rows[0].semana_anio);
+                        //console.log(results.rows[0].semana_anio);
                         $('#cbSemanaNum').append('<option value="' + results.rows[j].semana_anio + '">'+ results.rows[j].semana_anio +'</option>');
                     }
                     $('#cbSemanaNum').val(weekDb);
@@ -741,10 +735,10 @@ function saveGPS(vFecha, vLat, vLng, vUser){
         url: ws_url,
         success: function(data){
             //alert(data);
-            //console.log('Sucess Save on Server');
+            console.log('Sucess Save on Server');
         },
         error: function(data){
-            //console.log(data);
+            console.log(data);
             //alert(data);
         }
     });
@@ -778,7 +772,7 @@ function onSuccess(position){
         sc = d.getSeconds();
     }
 
-    ////console.log(h +'+'+m);
+    //console.log(h +'+'+m);
     vLat = position.coords.latitude;
     vLng = position.coords.longitude;
 
@@ -793,12 +787,9 @@ function onSuccess(position){
 
         if(lat1 != 0 && lng1 !=0){
             vD = getDistanceFromLatLonInKm(lat1, lng1, vLat,vLng);
-            ////console.log(vD);
+            //console.log(vD);
             vDistance += parseFloat(vD);
         }else{
-            vDistance = 0;
-        }
-        if(isNaN(vDistance)){
             vDistance = 0;
         }
         
@@ -824,7 +815,7 @@ function onSuccess(position){
 }
 function onErrorF(error){
     window.plugins.toast.show(error, 1000, 'bottom'); 
-    //console.log('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+    console.log('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
 }
 
 
@@ -858,7 +849,7 @@ function reloadkpi(){
         },
         success: function(data){
             //alert(data);
-            //console.log(data);
+            console.log(data);
             json_result = data;
             for(i=0; i<json_result.length; i++){
                 vendedor = json_result[i].vendedor;
@@ -876,11 +867,11 @@ function reloadkpi(){
 
         },
         error: function(data){
-            //console.log(data);
+            console.log(data);
             //alert(data);
         },
         complete: function(){
-            ////console.log(pros_mbl);
+            //console.log(pros_mbl);
             vHtml += '<table border="0" width="100%">'                                    
             vHtml += ' <tr><td width="50%">Prop. MBL</td>'
             vHtml += ' <td width="16%" align="center">' + pros_mbl + '</td>'
@@ -928,7 +919,7 @@ function tracking(){
 
         cordova.plugins.backgroundMode.setEnabled(true); 
         clearInterval(vIntervalGeo);
-        //console.log('starting..');
+        console.log('starting..');
         $("#startGPS").hide();
         $("#stopGPS").show();
 
@@ -948,7 +939,7 @@ function tracking(){
 }
 
 function logout(){
-    ////console.log(vDatosUsuario.user);
+    //console.log(vDatosUsuario.user);
     logInOut(vDatosUsuario.user, 0);
     setTimeout(function(){ window.location.replace('index.html?user=0&login=0'); }, 800);
 }
@@ -1093,10 +1084,10 @@ function getBase64(file) {
    var reader = new FileReader();
    reader.readAsDataURL(file);
    reader.onload = function () {
-     ////console.log(reader.result);
+     //console.log(reader.result);
    };
    reader.onerror = function (error) {
-     ////console.log('Error: ', error);
+     //console.log('Error: ', error);
    };
 }
 
@@ -1105,7 +1096,7 @@ function resize_img(){
 
     setTimeout(function(){ 
         wuser = $("#imgUser").width()*1.02; 
-        ////console.log('Resizin img - ' + wuser);
+        //console.log('Resizin img - ' + wuser);
         $("#imgUser").css('height', 
         wuser); }, 
     200);
@@ -1117,30 +1108,30 @@ function desplegarForm(vIdForm, callback){
     var vFlag = 0;
     vIdFormulario = vIdForm;
 
-    ////console.log(vIdForm);
+    //console.log(vIdForm);
     db.transaction(function(cmd){   
         cmd.executeSql('SELECT * FROM tbl_forms where id =?', [vIdForm], function (cmd, results) {
             var len = results.rows.length;
 
             for(i=0; i<len; i++){
                vItems = JSON.parse(results.rows.item(i).dtos);
-               ////console.log(vItems);
+               //console.log(vItems);
                drawForm(vItems, vIdForm, results.rows.item(i).scripts);
                vFormData = {id_form:vIdForm + '_' + getYMD(0) + getHMS(), vdata:vItems};
-               ////console.log(vFormData);
+               //console.log(vFormData);
             }   
         });
     });
 }
 
 function drawForm(vItems, vtittle, vScript){
-    ////console.log(vItems);
+    //console.log(vItems);
     vStrForm = '';
     vStrForm += '<div class="custom-corners"><div class="ui-bar ui-bar-a"><h3>'+ vtittle +'</h3></div>';
     vStrForm += '<div class="ui-body ui-body-a">';
     var temp = [];
     for (j=0; j<vItems.length; j++){
-        ////console.log(vStrForm);
+        //console.log(vStrForm);
         temp.push(drawObject(parseInt(vItems[j].tipo), vItems[j].id, vItems[j].name, eval(vItems[j].ops), vItems[j].func));
         vStrForm += temp[j];
     }
@@ -1154,7 +1145,7 @@ function drawForm(vItems, vtittle, vScript){
     */
     vStrForm += '</script>';
     vStrForm += "</div></div>";
-    ////console.log(vStrForm)
+    //console.log(vStrForm)
     
     switchMenu(3, 100);
 
@@ -1208,14 +1199,9 @@ function drawObject(vTipo, vId, vNombre, vOptions, vfunc){
         case 201:
             vStr += '<br /><center><button id="'+ vId +'" onclick="'+ vfunc + '" data-theme="b" style="width:60%">'+ vNombre +'</button></center>';
         break;
-         case 202:
-            vStr += '<br /><center><button id="'+ vId +'" onclick="'+ vfunc + '" data-theme="b" style="width:60%">'+ vNombre +'</button></center>';
-        break;
     }    
     return vStr;
 }
-
-
 
 // Fumcion para obtener formularios del servidor
 function updateForms(){
@@ -1233,7 +1219,7 @@ function updateForms(){
             });
         },
         success: function(data){
-            //console.log(data);
+            console.log(data);
             vQry = '';
             vQry = 'DELETE FROM tbl_forms';
 
@@ -1244,12 +1230,12 @@ function updateForms(){
                 
                 vQry = 'INSERT INTO tbl_forms (id, desc, type, version, dtos, scripts, udt_dt) VALUES(';
                 vQry += '\'' + data[i].id + '\',\'' + data[i].desc + '\','  + data[i].tipo + ',' + data[i].ver + ',\'' + JSON.stringify(data[i].data) + '\',\''+ data[i].vscript +'\',\'' + data[i].udt_dt + '\')';                
-                ////console.log(vQry);
+                //console.log(vQry);
                 ejecutaSQL(vQry, 0); 
             }
         }, 
         error: function(e){
-            //console.log(e);
+            console.log(e);
             $.mobile.loading( 'show', {
                 text: 'Servidor no responde.',
                 textVisible: true,
@@ -1258,7 +1244,7 @@ function updateForms(){
             });
         },
         complete: function(e){
-            ////console.log(e);
+            //console.log(e);
             show_Forms();
             setTimeout(function(){
                 $.mobile.loading('hide');
@@ -1292,7 +1278,7 @@ function formsEnviados(){
             vStrHtml += '<table data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
             vStrHtml +=  '<thead><tr><th data-priority="2">ID</th><th data-priority="0">Formulario</th><th data-priority="1">fecha</th></tr></thead>';
             vStrHtml +=  '<tbody>';
-            ////console.log(len);
+            //console.log(len);
             for(i=0; i<len; i++){
                 vName = results.rows[i].id_form.split('_')
                 vStrHtml +=  '<tr>';
@@ -1304,7 +1290,7 @@ function formsEnviados(){
             }   
             vStrHtml +=  '</tbody>';
             vStrHtml +=  '</table>';
-            ////console.log(vStrHtml);
+            //console.log(vStrHtml);
             $("#tbl_forms_enviados").html(vStrHtml);
             $("#tbl_forms_enviados").trigger('create');
             $.mobile.loading('hide');
@@ -1340,7 +1326,7 @@ function formsPendientes(){
             }   
             vStrHtml +=  '</tbody>';
             vStrHtml +=  '</table>';
-            ////console.log(vStrHtml);
+            //console.log(vStrHtml);
             $("#tbl_forms_pendientes").html(vStrHtml);
             $("#tbl_forms_pendientes").trigger('create');
             $.mobile.loading('hide');
@@ -1358,29 +1344,9 @@ function formsPendientes(){
 function envioFormsPend(){
     var contForms = 0;
     var contRegs = 0;
-    var idFordis;
-    var idForm;
-    var arrSr = [];
-
-
     for(i=0; i<vFormsPendientes.length; i++){
         $.mobile.loading('show');
-        ////console.log(vFormsPendientes); 
-        idForm = vFormsPendientes[0].id_form.split('_');
-
-        if(idForm[0]=='PFORDIS04'){
-            db.transaction(function(cmd){   
-                cmd.executeSql('SELECT * FROM tbl_series_tangibles_br where id_fordis =?', [vFormsPendientes[0].id_form], function (cmd, results) {
-                    var len = results.rows.length;
-                    for(i=0;i<len;i++){
-                        arrSr.push({serie:results.rows[i].serie, usuario:results.rows[i].usuario, id_fordis:results.rows[i].id_fordis, id_pdv:results.rows[i].id_pdv});
-                    }
-                    ////console.log(arrSr);
-                    sendSerieTangible(arrSr);
-                });
-            });
-        }
-        
+        //console.log(vFormsPendientes); 
 
         $.ajax({
             url:ws_url,
@@ -1388,18 +1354,18 @@ function envioFormsPend(){
             data:{m:302,vx:userWS, vy:pdwWS, ui:vDatosUsuario.user, forms:vFormsPendientes[i]},        
             dataType:'text',
             success: function(data){
-                ////console.log(i);
+                //console.log(i);
                 var vflag = data.split('/');
                 if(vflag[0] == 'SUCCESS'){
                     vQuery = 'UPDATE tbl_forms_filled SET status=1 where id_form=\'' + vflag[1] + '\'';
                     ejecutaSQL(vQuery, 0);                        
                     contForms ++;
                 }else{
-                    //console.log(data);
+                    console.log(data);
                 }           
             }, 
             error: function(error){
-                ////console.log('error');
+                //console.log('error');
                 $.mobile.loading( 'show', {
                     text: '',
                     textVisible: true,
@@ -1410,7 +1376,7 @@ function envioFormsPend(){
                 setTimeout(function(){  $.mobile.loading('hide'); }, 2000);
             },
             complete: function(e){
-                ////console.log(e);
+                //console.log(e);
                 contRegs++;                
                 if(contRegs==vFormsPendientes.length){
                     $.mobile.loading( 'show', {
@@ -1430,98 +1396,31 @@ function envioFormsPend(){
 
 function continuarForms(){   
 
-
-    listSeriesFinal = [];
     var tempForm = [];
     var temArr = [];
     tempForm.push({id_form:'', vdata:[], fech:'', lat:0, lng:0});
     tempForm[0].id_form = vFormData.id_form;
-    var form_id =  vFormData.id_form.split('_');
-    var vFlagTan = '';
-    var count_series=0;
-
-    //console.log(vFormData.id_form);
-    logMsj(vFormData.id_form, 0);
-    if(form_id[0]=="PFORDIS04"){
-        vFlagTan = $("#Q3").val();
-        vContTan = 0;
-        vContTan += parseInt($("#Q6").val());
-        vContTan += parseInt($("#Q7").val());
-        vContTan += parseInt($("#Q8").val());
-        vContTan += parseInt($("#Q9").val());
-        vContTan += parseInt($("#Q10").val());
-        vContTan += parseInt($("#Q11").val());
-        vContTan += parseInt($("#Q12").val());
-        vContTan += parseInt($("#Q13").val());
-        vContTan += parseInt($("#Q14").val());
-        vContTan += parseInt($("#Q15").val());
-
-       
-        for(let srs of listSeries.SCRATCH_SR_16){
-            listSeriesFinal.push(srs)
-        }
-        for(let srs of listSeries.SCRATCH_SR_25){
-            listSeriesFinal.push(srs)
-        }
-        for(let srs of listSeries.SCRATCH_SR_50){
-            listSeriesFinal.push(srs)
-        }
-        for(let srs of listSeries.SCRATCH_SR_100){
-            listSeriesFinal.push(srs)
-        }
-        for(let srs of listSeries.SCRATCH_TP_25){
-            listSeriesFinal.push(srs)
-        }
-        for(let srs of listSeries.SCRATCH_TP_50){
-            listSeriesFinal.push(srs)
-        }
-        for(let srs of listSeries.SCRATCH_TP_100){
-            listSeriesFinal.push(srs)
-        }
-        for(let srs of listSeries.BLIS){
-            listSeriesFinal.push(srs)
-        }
-        for(let srs of listSeries.SMART){
-            listSeriesFinal.push(srs.serie)
-        }
-        for(let srs of listSeries.SIMCARDS){
-            listSeriesFinal.push(srs)
-        }
-        count_series = listSeriesFinal.length;
-		 listSeries = {SIMCARDS:[],SMART:[],SCRATCH_SR_16:[],SCRATCH_TP_25:[],SCRATCH_TP_50:[],SCRATCH_TP_100:[],SCRATCH_SR_25:[],SCRATCH_SR_50:[],SCRATCH_SR_100:[],BLIS:[]};
-    }
-    //console.log(listSeriesFinal);
 
     $.mobile.loading('show');
     try{
         getMapLocation();
     }catch(e){
-        //console.log(e);
+        console.log(e);
     }
-
-    //console.log('series' + count_series + "/tan:" + vContTan);
 
     try{
-     
-    if(vFlagTan=='SI' && count_series==0){
-        throw 101;
-    }
-    
-    if(vFlagTan=='SI' && (count_series!=vContTan)){
-        throw 101;
-    }
     setTimeout(function(){
         var vItem;
         var x1;
 
         for(i=0; i<vFormData.vdata.length; i++){
-            ////console.log(vFormData.vdata);
+            //console.log(vFormData.vdata);
             switch(parseInt(vFormData.vdata[i].tipo)){
                 case 104:
                     vItem = document.getElementsByName(vFormData.vdata[i].id);
-                    ////console.log(vItem);
+                    //console.log(vItem);
                     for(j=0; j<vItem.length; j++){
-                        ////console.log(vItem[j]);
+                        //console.log(vItem[j]);
                         if(vItem[j].checked == true){
                             x1 = vItem[j].value;
                         }
@@ -1530,9 +1429,9 @@ function continuarForms(){
                 case 105:
                     var contT = 0;
                     vItem = document.getElementsByName(vFormData.vdata[i].id);
-                    ////console.log(vItem);
+                    //console.log(vItem);
                     for(j=0; j<vItem.length; j++){
-                        //console.log(vItem[j]);
+                        console.log(vItem[j]);
                         if(vItem[j].checked == true){
                             if(contT==0){                                     
                                 x1 = vItem[j].value;
@@ -1556,116 +1455,30 @@ function continuarForms(){
         tempForm[0].lng = vLng;
         
         vFormData = tempForm;
-        ////console.log(vFormData[0].id_form);
+        //console.log(vFormData[0].id_form);
         prevForm(vFormData[0].id_form, 1);
-      //  listSeries = {SIMCARDS:[],SMART:[],SCRATCH_SR_16:[],SCRATCH_TP_25:[],SCRATCH_TP_50:[],SCRATCH_TP_100:[],SCRATCH_SR_25:[],SCRATCH_SR_50:[],SCRATCH_SR_100:[],BLIS:[]};
+
     }, 4000);
     }catch(e){
-        //console.log(e);
-        if(e==101){
-         let msj= '';
-         
-         varx = $("#Q6").val();
-         cant = listSeries.SCRATCH_SR_16.length
-         if(varx!=cant )
-         {
-            msj += 'TP VAS S.R. L. 16\n'  ;  
-         }  
-
-         varx = $("#Q7").val();
-         cant = listSeries.SCRATCH_TP_25.length;
-         if(varx!=cant )
-         {
-         msj += 'TP RECARGA L. 25\n';
-         }
-
-         varx = $("#Q8").val();
-         cant = listSeries.SCRATCH_TP_50.length ;
-         if(varx!=cant )
-         {
-         msj += 'TP RECARGA L. 50\n';
-         }
-
-         varx = $("#Q9").val();
-         cant = listSeries.SCRATCH_TP_100.length;
-         if(varx!=cant )
-         {
-         msj += 'TP RECARGA L. 100\n';
-         console.log("array"+varx);
-         console.log("cant"+cant);
-         }
-
-         varx = $("#Q10").val();
-         cant = listSeries.SCRATCH_SR_25.length;
-         if(varx!=cant  )
-         {
-         msj += 'TP VAS S.R. L. 25\n';
-         }
-
-         varx = $("#Q11").val();
-         cant = listSeries.SCRATCH_SR_50.length;
-         if(varx!=cant )
-         {
-         msj += 'TP VAS S.R. L. 50\n';
-         }
-
-         varx = $("#Q12").val();
-         cant = listSeries.SCRATCH_SR_100.length;
-         if(varx!=cant )
-         {
-         msj += 'TP VAS S.R. L. 100\n';
-         }
-
-         varx = $("#Q13").val();
-         cant = listSeries.SIMCARDS.length;
-         if(varx!=cant )
-         {
-         msj += 'SIMCARDS\n';
-         console.log("array"+varx);
-         console.log("cant"+cant);
-         }
-
-         varx = $("#Q14").val();
-         cant = listSeries.SMART.length;
-         if(varx!=cant )
-         {
-         msj += 'SMARTPHONES\n';
-         }
-
-         varx = $("#Q15").val();
-         cant = listSeries.BLIS.length;
-         if(varx!=cant )
-         {
-         msj += 'BLISTER\n';
-         }
-
-            alert('Tienes que cargar todas las series, favor cargar:\n'+msj); //msj
-        }else{            
-            alert('Error Generando Formulario');
-        }
-        $.mobile.loading('hide');
+        console.log(e);
+        alert('Error Generando Formulario');
     }
 }
 
 function envioForm(){
-    var vForm = vFormData[0].id_form.split('_');
-    var objDtos = JSON.parse(vFormData[0].vdata);
-    var arrDatosS = [];
 
-    ////console.log(listSeries);
     $.ajax({
             url:ws_url,
             type:'POST',
             data:{m:302,vx:userWS, vy:pdwWS, ui:vDatosUsuario.user, forms:vFormData[0]},        
             dataType:'text',
             success: function(data){
-                console.log(data);
+                //console.log(data);
                 var vflag = data.split('/');
                 if(vflag[0] == 'SUCCESS'){
                     vQuery = 'INSERT INTO tbl_forms_filled (id_form, dtos, date, status, lat, lng) ';
                     vQuery += 'VALUES(\'' +  vFormData[0].id_form + '\',\'' + (vFormData[0].vdata).toString() + '\',' + vFormData[0].fech + ',1,';
                     vQuery += vFormData[0].lat + ','+ vFormData[0].lng  +')';
-
                     ejecutaSQL(vQuery, 0);        
 
                     $.mobile.loading( 'show', {
@@ -1686,15 +1499,6 @@ function envioForm(){
                     });
                     setTimeout(function(){  $.mobile.loading('hide'); backButton(); }, 1200);
                 }
-
-
-                if(vForm[0]=='PFORDIS04'){
-                    for(let vX of listSeriesFinal){
-                        arrDatosS.push({serie:vX, usuario:vDatosUsuario.user, id_fordis:vFormData[0].id_form,id_pdv:objDtos[1].r});
-                    }
-                    //console.log(arrDatosS);
-                    sendSerieTangible(arrDatosS);
-                }
                 
 
             }, 
@@ -1711,33 +1515,16 @@ function envioForm(){
                 vQuery += vFormData[0].lat + ','+ vFormData[0].lng  +')';
                 ejecutaSQL(vQuery, 0);
 
-                if(vForm[0]=='PFORDIS04'){
-                    for(let vX of listSeriesFinal){
-                        ejecutaSQL("insert into tbl_series_tangibles_br (serie, usuario, id_fordis,id_pdv) values('" + vX + "','" + vDatosUsuario.user  + "','" + vFormData[0].id_form  + "'," + objDtos[1].r + ")", 0);
-                    }
-                    for(let vX of listSeriesFinal){
-                        ejecutaSQL("delete from tbl_series_tangibles  where serie = '"+ vX + "'", 0);
-                       // listSeriesFinal = '';
-                    }
-					
-                }
-
                 setTimeout(function(){  
                     $.mobile.loading('hide'); 
                     backButton();
                 }, 2000);
             }
         });  
-    
-
     //}, 4000);       
 }
 
 function guardarForm(){
-
-
-    var vForm = vFormData[0].id_form.split('_');
-    var objDtos = JSON.parse(vFormData[0].vdata);
 
     $.mobile.loading( 'show', {
         text: '',
@@ -1754,16 +1541,6 @@ function guardarForm(){
     vQuery += vFormData[0].lat + ','+ vFormData[0].lng  +')';
     ejecutaSQL(vQuery, 0);
 
-     if(vForm[0]=='PFORDIS04'){
-        for(let vX of listSeriesFinal){
-            ejecutaSQL("insert into tbl_series_tangibles_br (serie, usuario, id_fordis,id_pdv) values('" + vX + "','" + vDatosUsuario.user  + "','" + vFormData[0].id_form  + "'," + objDtos[1].r + ")", 0);
-        }
-        for(let vX of listSeriesFinal){
-            ejecutaSQL("delete from tbl_series_tangibles  where serie = '"+ vX + "'", 0);
-        }
-        ////console.log(arrDatosS);
-    }
-
     $.mobile.loading( 'show', {
         text: 'Guardado Exitosamente',
         textVisible: true,
@@ -1774,7 +1551,7 @@ function guardarForm(){
 
       
     }catch(e){
-        //console.log(e);
+        console.log(e);
         $.mobile.loading( 'show', {
         text: 'No se pudo guardar el formulario',
         textVisible: true,
@@ -1801,7 +1578,7 @@ function prevForm(vIdForm, vFlag){
                 cmd.executeSql('SELECT * FROM tbl_forms_filled where id_form =?', [vIdForm], function (cmd, results) {
                     var len = results.rows.length;
                     if(len>0){
-                        ////console.log(results.rows[0].id_form);
+                        //console.log(results.rows[0].id_form);
                         StrHtml += '<p><b>Id Formulario:</b> <br />'+ results.rows[0].id_form +'</p>';
                         StrHtml += '<p><b>Fecha:</b> <br />'+ results.rows[0].date +'</p>';
                         if(parseInt(results.rows[0].status) == 1){
@@ -1812,7 +1589,7 @@ function prevForm(vIdForm, vFlag){
                         StrHtml += '<p><b>Lat/Lng:</b> <br />'+ results.rows[0].lat +' / '+ results.rows[0].lng +'</p>';
                         StrHtml += '<hr />';
                         arrItems = eval(results.rows[0].dtos);
-                        ////console.log(arrItems);
+                        //console.log(arrItems);
                         for(i=0; i<arrItems.length; i++){
                             StrHtml += '<p><b>'+arrItems[i].q +'</b> <br />&nbsp;&nbsp;'+ arrItems[i].r +'</p>';
                         }
@@ -1835,7 +1612,7 @@ function prevForm(vIdForm, vFlag){
             StrHtml += '<p><b>Lat/Lng:</b> <br />'+ vFormData[0].lat +' / '+ vFormData[0].lng +'</p>';
             StrHtml += '<hr />';
             arrItems = eval(vFormData[0].vdata);
-            ////console.log(arrItems);
+            //console.log(arrItems);
             for(i=0; i<arrItems.length; i++){
                 StrHtml += '<p><b>'+arrItems[i].q +'</b> <br />&nbsp;&nbsp;'+ arrItems[i].r +'</p>';
             }
@@ -1855,7 +1632,7 @@ function prevForm(vIdForm, vFlag){
             
         }
     }catch(e){
-        //console.log(e);
+        console.log(e);
     }
 }
 
@@ -1899,10 +1676,10 @@ function sendFileToServer(vArrFile){
         data:{m:303,vx:userWS, vy:pdwWS, arrFile:vArrFile},        
         dataType:'text',
         success: function(data){
-            //console.log(data);
+            console.log(data);
         }, 
         error: function(error){
-            //console.log(error);
+            console.log(error);
         }
     });  
 }
@@ -1918,17 +1695,17 @@ function getFileToServer(vFileId){
         dataType:'text',
         success: function(data){
             result = eval(data);
-            ////console.log(result);
+            //console.log(result);
             ejecutaSQL('DELETE FROM tbl_files where id_file=\'' + result[0].id_file + '\'', 0)
             setTimeout(function(){
                 for(i=0;i<result.length; i++){
                     strImg += result[i].dtos;
                     vQry = 'INSERT INTO tbl_files (id_file, correl, name, type, strdtos) VALUES(';
                     vQry += '\'' + result[i].id_file + '\',' + result[i].corel + ',\''  + result[i].name + '\',\'' + result[i].tipo + '\',\'' + result[i].dtos + '\')';                
-                    ////console.log(vQry);
+                    //console.log(vQry);
                     ejecutaSQL(vQry, 0); 
                 }
-                ////console.log('Img Saved Done');
+                //console.log('Img Saved Done');
                 if(strImg.length>=10){
                     displayImage(strImg);                    
                 }else{
@@ -1937,41 +1714,12 @@ function getFileToServer(vFileId){
             }, 1000);
         }, 
         error: function(error){
-            //console.log(error);
+            console.log(error);
         }
     });  
 }
 
-function sendSerieTangible(vArDatos){
 
-    var result;
-    var strImg = '';
-	//console.log(vArDatos);
-    $.ajax({
-        url:ws_url,
-        type:'POST',
-        data:{m:315,vx:userWS, vy:pdwWS, ar_items:vArDatos},        
-        dataType:'text',
-        success: function(data){
-			console.log(data);
-            //result = eval(data);         
-            if(data=='SUCCESS/'){                   
-                setTimeout(function(){
-					//console.log(vArDatos);
-                    for(let vX of vArDatos){
-                        ejecutaSQL('DELETE FROM tbl_series_tangibles where serie=\'' + vX.serie + '\'', 0);
-                        ejecutaSQL('DELETE FROM tbl_series_tangibles_br where serie=\'' + vX.serie + '\'', 0);
-                    } 
-                }, 1000);
-            }else{
-                alert('No se enviaron series..');
-            }            
-        }, 
-        error: function(error){
-            //console.log(error);
-        }
-    });  
-}
 
 function reporteVentas(vaniomes){
 
@@ -2006,13 +1754,13 @@ function reporteVentas(vaniomes){
     $("#sim_met").html(0);
     $("#sim_res").html(0);
 
-    ////console.log(vaniomes);
+    //console.log(vaniomes);
     db.transaction(function(cmd){   
         cmd.executeSql('SELECT anomes, producto, unidad, sum(meta) as meta, sum(monto) as monto FROM tbl_ventas where id_dms=? and anomes=? group by anomes, producto, unidad', [parseInt(vDatosUsuario.id_dms), parseInt(vaniomes)], function (cmd, results) {
             var len = results.rows.length;
             if(len>0){
                 for(i=0; i<len; i++){
-                    ////console.log(results.rows[0].producto);
+                    //console.log(results.rows[0].producto);
                     vCats.push(results.rows[i].producto);
                     vMetas.push(parseInt(results.rows[i].meta));
                     if(parseInt(results.rows[i].meta)>0){
@@ -2052,7 +1800,7 @@ function reporteVentas(vaniomes){
             }
 
             vSeries = [{name:'meta', data:vMetas}, {name:'ejecutado', data:vEjecucion}];
-            ////console.log(vSeries);
+            //console.log(vSeries);
 
             $("#sbRtpGlobal").show();    
             $("#sbCierreD").hide();
@@ -2082,7 +1830,7 @@ function cierresDiarios(vFecha){
     }else{      
         vaniomes=vFecha;
     }
-    ////console.log(vaniomes);
+    //console.log(vaniomes);
     $("#epin2_eje").html(0);
     $("#tmy2_eje").html(0);
     $("#tar2_eje").html(0);
@@ -2090,13 +1838,13 @@ function cierresDiarios(vFecha){
     $("#smt2_eje").html(0);
     $("#sim2_eje").html(0);
 
-    ////console.log(vaniomes);
+    //console.log(vaniomes);
     db.transaction(function(cmd){   
         cmd.executeSql('SELECT particion, producto, unidad, sum(meta) as meta, sum(monto) as monto FROM tbl_ventas where id_dms=? and particion=? group by anomes, producto, unidad', [parseInt(vDatosUsuario.id_dms), parseInt(vaniomes)], function (cmd, results) {
             var len = results.rows.length;
             if(len>0){
                 for(i=0; i<len; i++){
-                    ////console.log(results.rows[0].producto);
+                    //console.log(results.rows[0].producto);
                     vCats.push(results.rows[i].producto);
                     /*vMetas.push(parseInt(results.rows[i].meta));
                     if(parseInt(results.rows[i].meta)>0){
@@ -2128,7 +1876,7 @@ function cierresDiarios(vFecha){
             $("#cierr_tot").html(tot_cierre.toLocaleString('en'));
 
             vSeries = [{name:'ejecutado', data:vEjecucion}];
-            ////console.log(vSeries);
+            //console.log(vSeries);
             drawChart1('dvChartVtas', 'Ejecución Diaria', vFecha, 'HNL', vSeries, vCats);
             $("#sbRtpGlobal").hide();    
             $("#sbCierreD").show();
@@ -2147,7 +1895,7 @@ function reloadVentas(vaniomes, vFlag){
     var aniomes_cb=0;
     var flag_mes_ac=0;
     var aniomesact = getYMD(0).toString().substr(0,6);
-    ////console.log($("#anomesRVtas").val());
+    //console.log($("#anomesRVtas").val());
     if(vaniomes==0){
         vaniomes =  getYMD(0).substr(0,6);
     }else{
@@ -2162,7 +1910,7 @@ function reloadVentas(vaniomes, vFlag){
         alert('ID DMS no Establecido');
     }else{
         $.mobile.loading('show'); 
-        ////console.log(vaniomes);
+        //console.log(vaniomes);
         $.ajax({
             url:ws_url,
             type:'POST',
@@ -2170,7 +1918,7 @@ function reloadVentas(vaniomes, vFlag){
             dataType:'text',
             success: function(data){
                 vResult = eval(data);
-                ////console.log(vResult);
+                //console.log(vResult);
                 query = 'delete from tbl_ventas where anomes =' + vaniomes +' and id_dms=' + vDatosUsuario.id_dms;
                 if(vResult.length>0){                    
                     /*$("#anomesRVtas").empty();
@@ -2199,7 +1947,7 @@ function reloadVentas(vaniomes, vFlag){
                             query += vResult[i].unidad + '\',';
                             query += vResult[i].meta + ',';
                             query += vResult[i].monto + ')';
-                            ////console.log(query);
+                            //console.log(query);
                             ejecutaSQL(query, 0);
                         }
                         setTimeout(function(){ if(vFlag==0) {reporteVentas(vaniomes)}else{cierresDiarios(vFech)};}, 3000);
@@ -2339,7 +2087,6 @@ function deg2rad(deg) {
 }
 
 function getFechFormated(vNumFech){
-    //console.log(vNumFech);
     var vReturn;
     var vAnio = vNumFech.toString().substr(0,4);
     var vMesNum = vNumFech.toString().substr(4,2);
@@ -2381,7 +2128,7 @@ function cierreVtasDiaria(vFlagCierre, vFlagRes){
 
 function sendCierreVtas(){
     $.mobile.loading('show');
-    //console.log('enviando cierre');
+    console.log('enviando cierre');
     $.ajax({
             url:ws_url,
             type:'POST',
@@ -2406,7 +2153,7 @@ function sendCierreVtas(){
                         html: '<span><center>Guardado Exitosamente</center></span>'
                     });
                 }
-                ////console.log(vResult);                
+                //console.log(vResult);                
             }, 
             error: function(error){
                 $.mobile.loading( 'show', {
@@ -2423,43 +2170,7 @@ function sendCierreVtas(){
         });  
 }
 
-function getseries(){
-    var vResult;
-    var fech = getYMD(0);
-    var vQry= '';
 
-  $.mobile.loading('show');
-
-    $.ajax({
-            url:ws_url,
-            type:'POST',
-            data:{m:311,vx:userWS, vy:pdwWS, usuario:vDatosUsuario.user.toUpperCase()},        
-            dataType:'json',
-            success: function(data){
-                console.log(data);
-                var json = eval(data);
-                if( json.length>0 ){    
-                    //alert(JSON.stringify(json));            
-                    ejecutaSQL('delete from tbl_series_tangibles', 0);                    
-                    for(var i=0; i<json.length; i++){                        
-                        ejecutaSQL('insert into tbl_series_tangibles (serie, usuario, modelo, descripcion, fecha_descarga, precio, tipo) values("'+json[i].serie+'","'+json[i].usuario+'","'+json[i].modelo+'","'+json[i].descripcion_modelo+'","'+fech+'",'+json[i].precio+',"'+json[i].tipo+'")',0);                                                         
-                        //ejecutaSQL('insert into tbl_series_tangibles (serie, usuario, modelo, descripcion, fecha_descarga, precio, tipo) values("'+json[i].serie+'","'+json[i].usuario+'","'+json[i].modelo+'","'+json[i].descripcion_modelo+'","'+fech+'",1,"NA")',0);                                                         
-                    }                       
-                    setTimeout(function(){$.mobile.loading('hide')},3000);   
-                    
-                    alert('Series Actualizadas Correctamente'); 
-                }               
-            },error: function(error){
-                //console.log(error);
-                $.mobile.loading('hide');
-
-
-            }
-    });
-
-   }
-   
-   
 function getPlanningDMS(){
     var vResult;
     var weekNum;
@@ -2476,7 +2187,7 @@ function getPlanningDMS(){
             data:{m:309,vx:userWS, vy:pdwWS, usuario:vDatosUsuario.user.toUpperCase()},        
             dataType:'json',
             success: function(data){
-                //console.log(data);
+                console.log(data);
                 var json = eval(data);
                 
                 if( json.length>0 ){                    
@@ -2487,33 +2198,13 @@ function getPlanningDMS(){
                     setTimeout(function(){$.mobile.loading('hide')},3000);                       
                 }               
             },error: function(error){
-                //console.log(error);
+                console.log(error);
                 $.mobile.loading('hide');
             }
     });
-    /*
-        $.ajax({
-            url:ws_url,
-            type:'POST',
-            data:{m:311,vx:userWS, vy:pdwWS, usuario:vDatosUsuario.user.toUpperCase()},        
-            dataType:'json',
-            success: function(data){
-                //console.log(data);
-                var json = eval(data);
-                
-                if( json.length>0 ){                    
-                    ejecutaSQL('delete from tbl_sim_card_br', 0);                    
-                    for(var i=0; i<json.length; i++){                        
-                        ejecutaSQL('insert into tbl_sim_card_br (serie, id_employee) values("'+json[i].serie+'","'+json[i].id_employee+'")',0);                                                         
-                    }                       
-                    setTimeout(function(){$.mobile.loading('hide')},3000);                       
-                }               
-            },error: function(error){
-                //console.log(error);
-                $.mobile.loading('hide');
-            }
-    });
-*/
+
+    
+
     $.ajax({
             url:ws_url,
             type:'POST',
@@ -2521,16 +2212,16 @@ function getPlanningDMS(){
             dataType:'text',
             success: function(data){
                 vResult = eval('(' +data+')');                
-                ////console.log(vResult);
+                //console.log(vResult);
                 if(vResult.plan.length>0){
                     vQry = 'delete from tbl_plan_dms where aniomes='+ getYMD(0).substr(0,6) +' and upper(usuario)=\'' + vDatosUsuario.user.toUpperCase() + '\' and semana_anio=' + weekNum[1] ;
-                    ////console.log(vQry);
+                    //console.log(vQry);
                     ejecutaSQL(vQry, 0);
                     setTimeout(function(){
-                        ////console.log(vResult.length);
+                        //console.log(vResult.length);
 
                         for(i=0; i<vResult.plan.length; i++){
-                            ////console.log(vResult.plan[i]);
+                            //console.log(vResult.plan[i]);
                             query = 'insert into tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia, monto_credito) values(';
                             query += vResult.plan[i].aniomes + ',';
                             query += vResult.plan[i].semana_anio + ',';
@@ -2545,7 +2236,7 @@ function getPlanningDMS(){
                              //query += '1000)';
                             query += vResult.plan[i].monto_credito +')';
 
-                            ////console.log(query);
+                            //console.log(query);
                             //break;
                             ejecutaSQL(query, 0);
                         }
@@ -2594,7 +2285,7 @@ function getPlanningDMS(){
                 setTimeout(function(){$.mobile.loading('hide');},1500);
             },
             complete: function(e){    
-                ////console.log(e);            
+                //console.log(e);            
                 //setTimeout(function(){ $.mobile.loading('hide'); }, 1500);
                     var anioCb = getYMD(0).toString().substr(0,4);
                     setTimeout(function(){
@@ -2603,10 +2294,10 @@ function getPlanningDMS(){
                             var len = results.rows.length;
                             if(len>0){ $("#cbSemanaNum").empty(); $('#cbSemanaNum').append('<option value="' + 0 + '" selected="selected">-</option>'); }
                             for(j=0;j<len;j++){
-                                ////console.log(results.rows[i].semana_anio);
+                                //console.log(results.rows[i].semana_anio);
                                 $('#cbSemanaNum').append('<option value="' + results.rows[j].semana_anio + '" selected="selected">'+ results.rows[j].semana_anio +'</option>');
                             }
-                            ////console.log('Cb Done');
+                            //console.log('Cb Done');
                             $('#cbSemanaNum').selectmenu("refresh");
                         });
                         });
@@ -2628,17 +2319,17 @@ function showPlanSemana(vNumSemana,vAniomes){
             vStrHtml += '<thead><tr><th width="35%">Dia</th><th width="30%">Fecha</th><th>Cant PDVs.</th></tr></thead>';
             vStrHtml += '<tbody>';
 
-            ////console.log('Getting Data ' + len);
+            //console.log('Getting Data ' + len);
             if(len>0){                    
                 for(i=0; i<len; i++){                    
                     vStrHtml += '<tr><td>'+ results.rows[i].dias_semana +'</td><td style="text-align:center">'+ results.rows[i].ymd_dia +'</td><td style="text-align:center"><a href="#" onclick="showPdvs('+results.rows[i].ymd_dia+')">'+ results.rows[i].cant_pdvs +'</a></td></tr>';
-                    ////console.log(i);
+                    //console.log(i);
                 }                
             }
             vStrHtml += '</tbody> </table>';
             $("#dvPlanSemanal").html(vStrHtml);
             $("#dvPlanSemanal").trigger('create');
-            ////console.log('Sowing Table');
+            //console.log('Sowing Table');
             $("#dvPlanPDVs").html('');
             $("#dvPlanPDVs").trigger('create');
             setTimeout(function(){ $.mobile.loading('hide'); }, 1500);
@@ -2711,64 +2402,11 @@ function funcTblFindPdv() {
   }
 }
 
-
-function funcTblFindSmart() {
-    var input, filter, table, tr, td, i;
-    input = document.getElementById("finderSmart");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("smartTble1");
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[1];
-      //console.log(tr[i]);
-      if (td) {
-        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }       
-    }
-  }
-function funcTblSimcard() { 
-  var input, filter, table, tr, td, i;
-  input = document.getElementById("finderSimcard1");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("SimcardTble1");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[3];
-    if (td) {
-      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }       
-  }
-}
 function funcTblFindPdv2() {
   var input, filter, table, tr, td, i;
   input = document.getElementById("finderPDv2");
   filter = input.value.toUpperCase();
   table = document.getElementById("pdvsTble2");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[3];
-    if (td) {
-      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }       
-  }
-}
-function funcTblFindSimcard2() { 
-  var input, filter, table, tr, td, i;
-  input = document.getElementById("finderSimcard2");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("SimcardTble2");
   tr = table.getElementsByTagName("tr");
   for (i = 0; i < tr.length; i++) {
     td = tr[i].getElementsByTagName("td")[3];
@@ -2801,10 +2439,7 @@ function findPDVFordis(vFlag){
 
         setTimeout(function(){$.mobile.loading('show');},100);
 
-        db.transaction(function(cmd){
-            
-            //console.log(cmd);
-            
+        db.transaction(function(cmd){   
             cmd.executeSql('SELECT distinct id_pdv, nombre_pdv, nombre_circuito, monto_credito FROM tbl_plan_dms where aniomes=? order by nombre_circuito,nombre_pdv', [parseInt(fech_dtos)], function (cmd, results) {
                 var len = results.rows.length;
                 //alert(len);
@@ -2853,326 +2488,6 @@ function findPDVFordis(vFlag){
     }
 
 }
-
-
-function findSimcard(vFlag,vCantSim){ //linea 2513
-    var vHtml = '';
-    var fech_dtos = getYMD(0).substr(0,6);
-    var vTipo = '';
-    var vQuery = '';
-    var vIdQ = '';
-
-    
-       //if(vFlag==0){ 
-        switch(vFlag)
-        {
-            case 0:
-                 listSeries.SIMCARDS =[];
-                 vTipo = 'SIMCARD';
-                 vQuery = "SELECT * FROM tbl_series_tangibles where modelo in ('SIM013','SIM018') order by serie";
-                 vIdQ = 'Q13'; 
-            break;
-            case 1:
-                 listSeries.SMART =[];
-                 vTipo = 'SMARTPHONES';
-            break;
-            //SCRATCHCARD SR 16;
-            case 2:
-                listSeries.SCRATCH_SR_16 =[];
-            vQuery = "SELECT * FROM tbl_series_tangibles where modelo = 'DOT075' order by serie";
-            vIdQ = 'Q6';
-            break;
-            //SCRATCHCARD TP 25;
-            case 3:
-            listSeries.SCRATCH_TP_25 =[];
-            vQuery = "SELECT * FROM tbl_series_tangibles where modelo = 'DOT025' order by serie";
-            vIdQ = 'Q7';
-            break;
-             //SCRATCHCARD TP 50;
-            case 4:
-            listSeries.SCRATCH_TP_50 =[];
-            vQuery = "SELECT * FROM tbl_series_tangibles where modelo = 'DOT026' order by serie";  
-            vIdQ = 'Q8';
-            break;
-             //SCRATCHCARD TP 100;
-            case 5:
-                listSeries.SCRATCH_TP_100 =[];
-                vQuery = "SELECT * FROM tbl_series_tangibles where modelo = 'DOT030' order by serie";
-                vIdQ = 'Q9';
-           break;
-           case 6:
-            listSeries.SCRATCH_SR_25 =[];
-            vQuery = "SELECT * FROM tbl_series_tangibles where modelo = 'DOT071' order by serie";
-            vIdQ = 'Q10';
-            break;
-            case 7:
-                listSeries.SCRATCH_SR_50 =[];
-                vQuery = "SELECT * FROM tbl_series_tangibles where modelo = 'DOT072' order by serie";
-                vIdQ = 'Q11';
-            break;    
-                case 8:
-                    listSeries.SCRATCH_SR_100 =[];
-                    vQuery = "SELECT * FROM tbl_series_tangibles where modelo = 'DOT073' order by serie";
-                    vIdQ = 'Q12';
-       break;
-           case 9:
-            listSeries.BLIS =[];
-            vQuery = "SELECT * FROM tbl_series_tangibles where modelo = 'SIM011' order by serie";
-            vIdQ = 'Q15';
-            break;
-
-        }
-
-       ////console.log(vTipo);
-   
-        setTimeout(function(){$.mobile.loading('show');},100);
-
-        //cargarSims();
-
-        ////console.log("Se ejecuta consulta sql " + vCantSim);
-        db.transaction(function(cmd){   
-        //cmd.executeSql("SELECT * FROM tbl_series_tangibles where tipo=? order by serie", [vTipo], function (cmd, results) {
-        cmd.executeSql(vQuery, [], function (cmd, results) {
-                var len = results.rows.length, i;                    
-                i = 0;       
-                //alert(len);
-                if(vCantSim <=len){ 
-                    
-                    vStrHtml = '</select>';
-                    vStrHtml += '<table id="SimcardTble2" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-                    vStrHtml += '<thead><tr><th width="5%">#</th><th width="10%">Serie Producto</th><th></th></tr></thead>';
-                    vStrHtml += '<tbody>';        
-              
-                    for(i=0;i<vCantSim;i++){
-                        objSerie = {"serie":results.rows.item(i).serie, "precio":results.rows.item(i).precio, "modelo":results.rows.item(i).modelo, "desc":results.rows.item(i).descripcion, "tipo":results.rows.item(i).tipo};                    
-                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td>'+ results.rows[i].serie +'</td><td><input type="checkbox" checked /></td></tr>';
-                    
-                        if(vFlag==0){
-                            listSeries.SIMCARDS.push(objSerie);
-                        } 
-                        else if(vFlag==1){                            
-                            listSeries.SMART.push(objSerie); 
-                        }  
-                        
-                        else if(vFlag==2){                            
-                            listSeries.SCRATCH_SR_16.push(objSerie); 
-                        } 
-                        else if(vFlag==3){                            
-                            listSeries.SCRATCH_TP_25.push(objSerie); 
-                        } 
-                        else if(vFlag==4){                            
-                            listSeries.SCRATCH_TP_50.push(objSerie); 
-                        } 
-                        else if(vFlag==5){                            
-                            listSeries.SCRATCH_TP_100.push(objSerie); 
-                        } 
-                        else if(vFlag==6){                            
-                            listSeries.SCRATCH_SR_25.push(objSerie); 
-                        } 
-                        else if(vFlag==7){                            
-                            listSeries.SCRATCH_SR_50.push(objSerie); 
-                        } 
-                        else if(vFlag==8){                            
-                            listSeries.SCRATCH_SR_100.push(objSerie); 
-                        } 
-                        else if(vFlag==9){                            
-                            listSeries.BLIS.push(objSerie); 
-                        } 
-                        objSerie = []; 
-                    }                           
-                    //vStrHtml += "</tbody> </table><br/><button class=\"ui-btn\" onclick=\"saveSeries("+vFlag+",'"+ vIdQ +"')\">Aceptar</button><br/>"; 
-                  
-                    setTimeout(function(){ $.mobile.loading('hide'); }, 1500);  
-                    
-                      /*
-                    Swal.fire({
-                    title:'Series Asignadas!',
-                    text:'Su codigo ha sido enviado al numero ingresado',
-                    html: '<html> '+ vStrHtml +'  </html>',
-                    icon:'success',
-                    showConfirmButton: false
-                    });
-                    */
-                    //console.log(listSeries);
-		             Swal.fire({
-                        title:'Series Asignadas!',
-                        text:'Su codigo ha sido enviado al numero ingresado',
-                        html: '<html> '+ vStrHtml +'  </html>',
-                        icon:'success',
-                        showConfirmButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: 'Aceptar',
-                        cancelButtonText: 'Cancelar'
-                        }).then((result) => {
-                            if (result.value) {
-     
-                              saveSeries(vFlag, vIdQ);
-         
-                            }
-                          });
-
-
-                }else{
-                    alert('No tienes suficientes series asignadas, tienes: ' +  len);
-					setTimeout(function(){ $.mobile.loading('hide'); }, 500);  
-                }
-                    //showlistSeries(0);
-                
-            });
-        });
-
-/*
-  db.transaction(function(cmd){
-           cmd.executeSql('SELECT distinct serie FROM tbl_sim_card_br order by serie',[] ,function (cmd, results) {
-                var len = results.rows.length; 
-                if(vCantSim <=len){
-                    //console.log(results);
-                   // vStrHtml = '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="findSimcard(1)">Cerrar</button><h3>Simcards</h3>';
-                   // vStrHtml += '<input type="search" id="findSimcard2" onkeyup="funcTblSimcard2()" placeholder="serie simcard"/>';
-                   /* vStrHtml += '<label>Circuito</label><select id="cbCirPlanPDV" onchange="changCircSearchPlan(this)" data-mini="true">';
-                    vStrHtml += '<option value="">-</option>'
-                    for(k=0;k<vCircuitos.length;k++){
-                        vStrHtml += '<option value="'+ vCircuitos[k] +'">'+vCircuitos[k]+'</option>';
-                    }
-                    *//*
-                    vStrHtml = '</select>';
-                    vStrHtml += '<table id="SimcardTble2" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-                    vStrHtml += '<thead><tr><th width="5%">#</th><th width="10%">Serie Simcard</th></tr></thead>';
-                    vStrHtml += '<tbody>';   
-                 
-                      for(i=0; i<vCantSim; i++){  
-
-                        //if(vCantSim > i){
-
-                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td><a ('+ results.rows[i].serie +')">'+ results.rows[i].serie +'</a></td>';
-                        //   }
-                       // alert("* PDV "+ vIdPdvG+" *\nserie:\n L. " + results.rows[i].serie ); 
-                    }       
-                     vStrHtml += '</tbody> </table><br/><br/>';
-                 }
-              // dvList.innerHTML=vStrHtml; 
-               
-               // document.getElementById('dv_forms_template').appendChild(dvList);
-              //   $("#dvListSimcard").css({"left":"-1%","padding":"3%", "width":"96%", "height":h,"background-color":"white","position":"fixed","top":10,"z-index":999,
-                                    //    "opacity":1, "overflow":"scroll"});
-               // $("#dvListSimcard").trigger('create');
-              //  setTimeout(function(){ $.mobile.loading('hide'); }, 1500);       
-});
-          });
-  }else{
-        try{
-        var dvListx= document.getElementById('dvListSimcard');
-        document.getElementById('dv_forms_template').removeChild(dvListx);
-        }catch(e){null};
-    }*/
-}
-
-function saveSeries(vFl, vQ){
-    var arrTemp = [];
-    console.log(vQ);
-
-    var table = document.getElementById("SimcardTble2"); 
-    var vQobj = document.getElementById(vQ); //$(#Q9)
-    var cantItem = 0; 
-    for (var i = 0, row; row = table.rows[i]; i++) { //iterate through rows 
-        //rows would be accessed using the "row" variable assigned in the for loop 
-       // for (var j = 0, col; col = row.cells[j]; j++) { 
-            //iterate through columns //columns would be accessed using the "col" variable assigned in the for loop 
-        //} 
-        if(i>0){
-            x = eval(row.cells[2].children[0]);
-            if(x.checked){
-                y = row.cells[1];
-                //alert(y.innerHTML);
-                arrTemp.push(y.innerHTML);
-            }             
-
-        }
-    }
-
-    cantItem = arrTemp.length;
-    ////console.log(cantItem);
-    if(vFl==0){        
-        listSeries.SIMCARDS = arrTemp;
-        vQobj.value = cantItem.toString();
-       
-    }
-    else if(vFl==2){        
-        listSeries.SCRATCH_SR_16 = arrTemp;      
-        vQobj.value = cantItem.toString();
-        
-    }
-    else if(vFl==3){        
-        listSeries.SCRATCH_TP_25 = arrTemp;      
-        vQobj.value = cantItem.toString();
-        //console.log(listSeries.SCRATCH_TP_25);
-    }
-    else if(vFl==4){        
-        listSeries.SCRATCH_TP_50 = arrTemp;      
-        vQobj.value = cantItem.toString();
-        //console.log(listSeries.SCRATCH_TP_50);
-    }
-    else if(vFl==5){        
-        listSeries.SCRATCH_TP_100 = arrTemp;      
-        vQobj.value = cantItem.toString();
-        //console.log(listSeries.SCRATCH_TP_100);
-    }
-    else if(vFl==6){        
-        listSeries.SCRATCH_SR_25 = arrTemp;      
-        vQobj.value = cantItem.toString();
-        //console.log(listSeries.SCRATCH_SR_25);
-    }
-    else if(vFl==7){        
-        listSeries.SCRATCH_SR_50 = arrTemp;      
-        vQobj.value = cantItem.toString();
-        //console.log(listSeries.SCRATCH_SR_50);
-    }
-    else if(vFl==8){        
-        listSeries.SCRATCH_SR_100 = arrTemp;      
-        vQobj.value = cantItem.toString();
-        //console.log(listSeries.SCRATCH_SR_100);
-    }
-    else if(vFl==9){        
-        listSeries.BLIS = arrTemp;      
-        vQobj.value = cantItem.toString();
-        //console.log(listSeries.BLIS);
-    }
-
-    Swal.close();
-    //alert('Series Seleccionadas');
-
-}
-
-
-function cargarSims(){
-
-    $.ajax({
-        async:false,
-        url:ws_url,
-        type:'POST',
-        data:{m:311,vx:userWS, vy:pdwWS, usuario:vDatosUsuario.user.toUpperCase()},        
-        dataType:'json',
-        success: function(data){
-            //console.log(data);
-            var json = eval(data);
-            
-            if( json.length>0 ){                    
-                ejecutaSQL('delete from tbl_sim_card_br', 0);                    
-                for(var i=0; i<json.length; i++){                        
-                    ejecutaSQL('insert into tbl_sim_card_br (serie) values("'+json[i].serie+'")',0); 
-                    // ejecutaSQL('insert into tbl_sim_card_br (serie) values("'+json[i].serie+'","'+json[i].usuario+'")',0);                                                              
-                }                       
-                setTimeout(function(){$.mobile.loading('hide')},3000);                       
-            }               
-        },error: function(error){
-            //console.log(error);
-            $.mobile.loading('hide');
-        }
-});
-
-}
-
-
 
 function getMontoCredito(id_pdv, vIdQ){
     obj=null;
@@ -3252,29 +2567,6 @@ function getVentaEstimada(id_pdv){
 }// fin del funcion
 
 */
-
-function setSerieSmart(vSerie){    
-    flag = 0;
-    serieSplit = vSerie.split(';');
-    for(let xs of listSeries.SMART){
-        if(serieSplit[0]==xs.serie){
-            flag=1;
-            break;
-        }
-    }
-    if(flag==0){
-        listSeries.SMART.push({serie:serieSplit[0],  modelo:serieSplit[1],desc:serieSplit[2]});  
-        var dvListx= document.getElementById('dvListSmart');
-        document.getElementById('dv_forms_template2').removeChild(dvListx);   
-        $("#dv_forms_template2").hide();
-        
-    }else{        
-        alert('Serie Duplicada');
-    }       
-    showlistSeries(0);
-}
-
-
 function setPDVFordis(vIdPDV){
     //Aqui se ejecuta el set del IDPDV;
     obj = document.getElementById('Q2');
@@ -3297,9 +2589,9 @@ function setPDVFordis(vIdPDV){
                 vQuery = "SELECT a.anio, a.semana, a.id_pdv, a.mon, a.mar, a.mie, a.jue, a.vie, a.sat, a.dom, a.promedio_diario";
                 vQuery +=  "  FROM tbl_fordis04_venta_sugerida a ";
                 vQuery +=  "  where a.id_pdv='" + parseInt(vIdPdvG) + "'";
-                ////console.log(vQuery);
+                //console.log(vQuery);
                 cmd2.executeSql(vQuery, null,function (cmd2, results) {
-                    ////console.log(results.rows);
+                    //console.log(results.rows);
                     var len = results.rows.length;
                     if (len > 0) {
                         
@@ -3343,7 +2635,7 @@ function changCircSearchPlan(vobj){
     var input, filter, table, tr, td, i;
     input = vobj
     filter = input.value.toUpperCase();
-    ////console.log(filter);
+    //console.log(filter);
     table = document.getElementById("pdvsTble2");
     tr = table.getElementsByTagName("tr");
     for (i = 0; i < tr.length; i++) {
@@ -3369,7 +2661,7 @@ function getDatosUsuario(){
             dataType:'text',
             success: function(data){
                 vResult = eval(data);
-                ////console.log(vResult); 
+                //console.log(vResult); 
                 if(vResult.length>0){
                     vQry = 'UPDATE users ';
                     vQry += ' set name = \'' + vResult[0].name + '\',';
@@ -3380,7 +2672,7 @@ function getDatosUsuario(){
                     vQry += ' id_dms = ' + vResult[0].id_dms + ',';
                     vQry += ' license = ' + vResult[0].license;                    
                     vQry += ' ,id_pdv_dlr = ' + vResult[0].dlr_pdv_dms;
-                    ////console.log(vQry);
+                    //console.log(vQry);
                     ejecutaSQL(vQry,0);
                     setTimeout(function(){
                         show_datos_user(vDatosUsuario.user);
@@ -3412,7 +2704,7 @@ function getDatosUsuario(){
 }
 
 function fichaPDV(vIDPdv){
-    ////console.log(vIDPdv);
+    //console.log(vIDPdv);
     var vHTML = '';
     db.transaction(function(cmd){   
         cmd.executeSql('SELECT * FROM tbl_ficha_pdv where id_pdv=?', [parseInt(vIDPdv)], function (cmd, results) {
@@ -3439,14 +2731,14 @@ function fichaPDV(vIDPdv){
                 $('html, body').animate({
                     scrollTop: $("#dvFichaPDV").offset().top - 130
                 }, 1000);
-                ////console.log(results.rows[0].nombre_pdv);
+                //console.log(results.rows[0].nombre_pdv);
             }
         });
     });
 }
 
 function makeFordis04(vPDV){
-    ////console.log(vPDV);
+    //console.log(vPDV);
     desplegarForm('FORDIS04');
     setTimeout(function(){
         $("#Q2").val(vPDV);
@@ -3457,7 +2749,7 @@ function makeFordis04(vPDV){
 }
 
 function validaPerfil(){
-    ////console.log(vDatosUsuario.perfil);
+    //console.log(vDatosUsuario.perfil);
     if(vDatosUsuario.perfil == 210){        
         $("#mnHorus").hide();
         $("#mnForms").hide();
@@ -3506,7 +2798,7 @@ function getDtosG(){
             dataType:'text',
             success: function(data){
                 vResult = eval(data);
-                ////console.log(vResult); 
+                //console.log(vResult); 
                 if(vResult.length>0){
                     ejecutaSQL('DELETE FROM tbl_ejec_sucursales WHERe anomes=' + vmesDtos,0);
                     for(i=0; i<vResult.length; i++){ 
@@ -3521,7 +2813,7 @@ function getDtosG(){
                         vQry +=  vResult[i].meta + ',';
                         vQry +=  vResult[i].res + ',';
                         vQry += '\'' + vResult[i].unidad + '\')';
-                        ////console.log(vQry);
+                        //console.log(vQry);
                         ejecutaSQL(vQry,0);
                     }  
                     setTimeout(function(){ showDatosSucursales(vDatosUsuario.id_pdv_dlr, vmesDtos, $("#cbProductoDashG").val()) }, 3000);                  
@@ -3547,7 +2839,7 @@ function getDtosG(){
 
 function showDatosSucursales(idDealer, anomes, vproduc){
     var vStrHtml='';
-    ////console.log(vproduc + anomes);
+    //console.log(vproduc + anomes);
     vStrHtml = '<table style="font-size:0.8em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
     vStrHtml += '<thead><tr><th width="46%">Sucursal</th><th data-priority=1>Unidad</th><th>Ejec.</th><th data-priority=2>Meta</th><th data-priority=1>Res.</th></tr></thead>';
     vStrHtml += '<tbody>';
@@ -3555,7 +2847,7 @@ function showDatosSucursales(idDealer, anomes, vproduc){
     db.transaction(function(cmd){   
         cmd.executeSql('SELECT * FROM tbl_ejec_sucursales where anomes=? and id_dealer=? and producto=?', [parseInt(anomes), parseInt(idDealer), vproduc], function (cmd, results) {
             var len = results.rows.length;    
-            ////console.log(len);        
+            //console.log(len);        
             if(len>0){                     
                 for(i=0; i<len; i++){    
                     vStrHtml += '<tr style="font-size:0.9em"><td><a href="#" onclick="detallSucursal('+results.rows[i].id_sucursal+')">'+ results.rows[i].nombre_sucursal  +'</a></td><td>'+ results.rows[i].unidad +'</td><td style="text-align:right">'+ parseFloat(results.rows[i].ejecucion).toLocaleString('en') +'</td><td style="text-align:right">'+ parseFloat(results.rows[i].meta).toLocaleString('en') +'</td><td style="text-align:right">'+ results.rows[i].res +' %</td></tr>';      
@@ -3580,7 +2872,7 @@ function changeProduct(){
 }
 
 function detallSucursal(vIdSucursal){
-    ////console.log(vIdSucursal + $("#cbAnomesSucs").val());
+    //console.log(vIdSucursal + $("#cbAnomesSucs").val());
     var arrCats = [];
     var arrSeries = [];
     var ejec = [];
@@ -3590,7 +2882,7 @@ function detallSucursal(vIdSucursal){
     db.transaction(function(cmd){   
         cmd.executeSql('SELECT * FROM tbl_ejec_sucursales where anomes=? and id_sucursal=? order by producto', [parseInt($("#cbAnomesSucs").val()), parseInt(vIdSucursal)], function (cmd, results) {
             var len = results.rows.length;    
-            ////console.log(len);        
+            //console.log(len);        
             if(len>0){                     
                 for(i=0; i<len; i++){  
                     if(arrCats.indexOf(results.rows[i].producto)==-1){
@@ -3600,7 +2892,7 @@ function detallSucursal(vIdSucursal){
                     }
                 }                  
 
-                ////console.log(arrCats);    
+                //console.log(arrCats);    
                 Highcharts.chart('dvDetSucursal', {
                     chart: {
                         type: 'column'
@@ -3622,7 +2914,7 @@ function detallSucursal(vIdSucursal){
                         }
                     },
                     tooltip:{formatter: function () {
-                        ////console.log(this);
+                        //console.log(this);
                         var vUnit2 = '';
                         var strn = '';
                         var serie_name = '';
@@ -3675,9 +2967,9 @@ function detallSucursal(vIdSucursal){
                         dataType:'text',
                         success: function(data){
                             vResult = eval(data);
-                            ////console.log(vResult); 
+                            //console.log(vResult); 
                             if(vResult.length>0){
-                                ////console.log(vResult); 
+                                //console.log(vResult); 
                                 //dasboard2
                                 Highcharts.chart('dvDetSucursalDiario', {
                                     chart:{
@@ -3715,7 +3007,7 @@ function detallSucursal(vIdSucursal){
                                     series: vResult,
 
                                     tooltip:{formatter: function () {
-                                        ////console.log(this);
+                                        //console.log(this);
                                         var vUnit2 = '';
                                         var strn = '';
                                         var serie_name = '';
@@ -3846,7 +3138,7 @@ function dibujarMancha(){
         db.transaction(function(cmd2){
 
             cmd2.executeSql("SELECT * FROM tbl_nodos where 1=1 ", null,function (cmd2, results) {
-                //console.log(results);
+                console.log(results);
                 var len = results.rows.length;
 
                 for(var i=0;i<len; i++){
@@ -3923,7 +3215,7 @@ function LeerCoordenadas(cadenaCoordenadas){
     
    var cordenadasC = cadenaCoordenadas.replace(/ /g, "").split('|');
     
-   ////console.log(cordenadasC);
+   //console.log(cordenadasC);
    
    var poligono = [];
     
@@ -3937,7 +3229,7 @@ function LeerCoordenadas(cadenaCoordenadas){
     
     }
     
-    ////console.log(poligono);
+    //console.log(poligono);
     
     return poligono;
     
@@ -3959,7 +3251,7 @@ function llenarPDVMarcacion(){
     db.transaction(function(cmd2){
 
             cmd2.executeSql("SELECT id_pdv, nombre_pdv FROM tbl_ficha_pdv where 1=1 ", null,function (cmd2, results) {
-                //console.log(results);
+                console.log(results);
                 var len = results.rows.length;
                 var html= '<option value="SELECCIONE">SELECCIONE</option>';
 
@@ -4017,7 +3309,7 @@ function guardarMarcacion(){
                 var sql="insert into tbl_horus_marcas_esp (LATITUD,LONGITUD,ID_PDV,FECHA_COMPLETA,USUARIO,NUMERO_CLIENTE,ESTADO_PAGO,METODO_PAGO,MONTO_PAGO) values";
                     sql+="('"+position.coords.latitude+"','"+position.coords.longitude+"','"+$("#marcancionE").val()+"','"+fecha+"','"+vDatosUsuario.user+"',";
                     sql+="'"+$("#telefono").val()+"','"+$("#estadoPago").val()+"', '"+$("#metodoPago").val()+"','"+$("#monto").val()+"') ";
-                    //console.log(sql); 
+                    console.log(sql); 
                     ejecutaSQL(sql,0);
                     $.mobile.loading('hide'); 
                     alert('Marcación Guardada de forma exitosa');
@@ -4085,7 +3377,7 @@ function enviarMarcacion(){
                 var sql="insert into tbl_horus_marcas_esp (LATITUD,LONGITUD,ID_PDV,FECHA_COMPLETA,USUARIO,NUMERO_CLIENTE,ESTADO_PAGO,METODO_PAGO,MONTO_PAGO) values";
                     sql+="('"+position.coords.latitude+"','"+position.coords.longitude+"','"+$("#marcancionE").val()+"','"+fecha+"','"+vDatosUsuario.user+"',";
                     sql+="'"+$("#telefono").val()+"','"+$("#estadoPago").val()+"', '"+$("#metodoPago").val()+"','"+$("#monto").val()+"') ";
-                    //console.log(sql); 
+                    console.log(sql); 
                     ejecutaSQL(sql,0); 
                     //alert('Marcacion Guardada de forma exitosa');
                     $('#marcancionE').val('SELECCIONE').change();
@@ -4143,7 +3435,7 @@ function sendMarksE() {
         db.transaction(function(cmd2){
 
             cmd2.executeSql("SELECT  LATITUD,LONGITUD,ID_PDV,FECHA_COMPLETA,USUARIO,NUMERO_CLIENTE,ESTADO_PAGO,METODO_PAGO,MONTO_PAGO from tbl_horus_marcas_esp where 1=1 ", null,function (cmd2, results) {
-                //console.log(results);
+                console.log(results);
                 var len = results.rows.length;
                
 
@@ -4203,13 +3495,13 @@ function sendMarksE() {
                         },
                         success: function(data){
 
-                            //console.log(data);
+                            console.log(data);
                             control_envio--;
-                            //console.log(control_envio);
+                            console.log(control_envio);
 
                             if(control_envio ==0 ){
 
-                                //console.log('entre al final')
+                                console.log('entre al final')
                                 $.mobile.loading('hide');
                                 alert('Marcaciones Enviadas de forma Exitosa');
 
@@ -4238,313 +3530,4 @@ function sendMarksE() {
 
 
         });
-}
-
-
-function  scaner_list(vFlag){  
-    var vSerie='';  
-    var vUsr = vDatosUsuario.user;
-    var objSerie;
-    var vSerie = [];
-
-    if(vFlag==0){
-        listSeries.SMART=[];
-    }
-    //vUsr ='APP.DMS.WILLIAM.NUNEZ';
-    
-    //vSerie = ['12002820007530','12002820007531'];
-    //console.log(vUsr);
-    
-    
-    cordova.plugins.barcodeScanner.scan(
-    function (result) {
-		flag = 0;
-        /*alert("We got a barcode\n" +
-                "Result: " + result.text + "\n" +
-                "Format: " + result.format + "\n" +
-                "Cancelled: " + result.cancelled);*/
-
-
-        if(result.cancelled == false) 
-        { 
-            //alert(result.text);                   
-            vSerie.push(result.text);
-			
-            for(let x of vSerie){
-				
-				for(let xs of listSeries.SMART){
-					if(x==xs.serie){
-						flag=1;
-						break;
-					}
-				}
-				
-				if(flag==0){					
-					db.transaction(function(cmd){   
-					cmd.executeSql("SELECT * FROM tbl_series_tangibles where serie = ?", [x], function (cmd, results) {
-							var len = results.rows.length, i;                    
-							i = 0;        
-							////console.log(vSerie + '/' + len);        
-							if(len > 0){
-								for(i=0;i<len;i++){
-									objSerie = {"serie":results.rows.item(i).serie, "precio":results.rows.item(i).precio, "modelo":results.rows.item(i).modelo, "desc":results.rows.item(i).descripcion, "tipo":results.rows.item(i).tipo};
-									break;
-								}
-								listSeries.SMART.push(objSerie);                    
-							}else{
-								alert('Serie no encontrada');
-							}
-							showlistSeries(0);
-						});
-					});					
-				}else{
-					alert('Serie Duplicada..');
-				}
-        
-            }
-        }else{
-            console.log('Scan Done');
-        }
-    },
-    function (error) {
-        alert("Scanning failed: " + error);
-    }); 
-}
-
-function showlistSeries(vFlag){
-    vStrHtml = '';
-    //console.log('Scanning');
-
-    try{
-    var dvListx= document.getElementById('dvListPDVs');
-    document.getElementById('dv_forms_template').removeChild(dvListx);    
-    }catch(e){null};
-    var h = $(window).height();
-    var dvList = document.createElement('div');
-    dvList.id = 'dvListPDVs';
-
-    if(vFlag==0)
-    {
-        vStrHtml += '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="showlistSeries(1)">Cerrar</button><h3>Listado Series</h3>';
-        vStrHtml += '<table id="pdvsTble2" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-        vStrHtml += '<thead><tr><th width="35%" data-priority="0">Serie</th><th data-priority="0">Modelo</th><th data-priority="0">Descripcion</th></tr></thead>';
-        vStrHtml += '<tbody>';                  
-        for(let rowx of listSeries.SMART){
-        //console.log(rowx);
-            vStrHtml += '<tr><td width="40%">'+ rowx.serie +'</td><td>'+  rowx.modelo +'</td><td>'+ rowx.desc +'</td></tr>';  
-           // console.log(listSeries.SMART);                  
-        }                 
-        vStrHtml += '</tbody> </table><br /><br /><button style="width:100px; height:30px; padding:0px" onclick="scaner_list(1)">Escanear</button>';
-        vStrHtml += '<button style="width:100px; height:30px; padding:0px;" onclick="showSmart(0)">Buscar </button>';
-        vStrHtml += '<button style="width:100px; height:30px; padding:0px; float:right" onclick="continueSerie()">Continuar</button>';
-        vStrHtml += '<br/><br/><br/><br/>';
-
-        
-
-        dvList.innerHTML=vStrHtml;  
-        document.getElementById('dv_forms_template').appendChild(dvList);
-        $("#dvListPDVs").css({"left":"-1%","padding":"3%", "width":"96%", "height":h,"background-color":"white","position":"fixed","top":10,"z-index":999,
-                                "opacity":1, "overflow":"scroll"});
-        $("#dvListPDVs").trigger('create');
-
-    }else{
-        try{
-        listSeries.SMART = [];
-        var dvListx= document.getElementById('dvListPDVs');
-        document.getElementById('dv_forms_template').removeChild(dvListx);
-        }catch(e){null};
-    }
-
-    //setTimeout(function(){ $.mobile.loading('hide'); }, 1500);
-}
-
-function continueSerie(){
-    var smart=0;
-    var simcard=0;
-    var tarSR16=0;
-    var tarSR25=0;
-    var tarSR50=0;
-    var tarSR100=0;
-    var tarR25=0;
-    var tarR50=0;
-    var tarR100=0;
-    var subTotTar = 0;
-    var subTotTarSR = 0;
-    var subToSim=0;
-    var subTotSmart=0;
-     var totalVenta=0;
-
-    var dvListx= document.getElementById('dvListPDVs');
-    document.getElementById('dv_forms_template').removeChild(dvListx);
-
-
-
-    //console.log(listSeries);
-    for(let vRows of listSeries.SMART){   
-        ////console.log(vRows);
-        smart++;
-
-        /*switch(vRows.tipo){
-            case 'SMARTHPHONES':
-                subTotSmart += 999;
-                smart++;
-            break;
-            case 'SCRATCHCARD':                
-                if(vRows.modelo=='DOT075')
-                {
-                    tarSR16+=8;
-                    subTotTarSR += 16*8; //vRows.precio
-
-
-                }if(vRows.modelo=='DOT073')
-                {
-                    tarSR100+=8
-                    subTotTarSR += 100*8;
-
-                }if(vRows.modelo=='DOT072')
-                {
-                    tarSR50+=8
-                    subTotTarSR += 50*8;
-
-                }if(vRows.modelo=='DOT071')
-                {
-                    tarSR25+=8
-                    subTotTarSR += 25*8;
-
-                }if(vRows.modelo=='DOT026')
-                {
-                    tarR50+=8
-                    subTotTar += 50*8;
-
-                }if(vRows.modelo=='DOT025')
-                {
-                    tarR25+=8
-                    subTotTar += 25*8;
-
-                }if(vRows.modelo=='DOT030')
-                {
-                    tarR100+=8
-                    subTotTar += 100*8;
-
-                }
-            break;
-            case 'SIMCARD':
-                subToSim += 10*3;
-                simcard += 3;
-            break;
-            case 'BLISTER':
-            break;
-        }*/
-    }
-    
-    $("#Q14").val(smart);
-   /*
- //TOTAL
-   totalVenta =  subTotTar+subTotTarSR + subToSim + subTotSmart + subToSim ;
-
-    
-    //Super Recarga
-    $("#Q12").val(tarSR100);
-    $("#Q11").val(tarSR50);
-    $("#Q10").val(tarSR25);
-    $("#Q6").val(tarSR16);
-    //Recarga
-    $("#Q9").val(tarR100);
-    $("#Q8").val(tarR50);
-    $("#Q7").val(tarR25);
-    //Simcard
-     $("#Q13").val(simcard);
-     //Smartphone
-    $("#Q14").val(smart);
-    //SUBTOTAL
-    $("#Q15").val(subTotTar);
-    $("#Q16").val(subTotTarSR);
-    $("#Q17").val(subToSim);
-    $("#Q18").val(subTotSmart);
-    //TOTAL
-    $("#Q19").val(totalVenta);
-    */
-}
-
-function logMsj(vStr, vTipo){
-    if(vTipo==0){
-        console.log(vStr);
-    }else{
-        alert(vStr);
-    }
-}
-
-/*
-DOT075  TIGOPK;3985;16;TARJETA VAS 16 MIN X L16.00(8 EN 1)
-DOT073  TIGOPK;3945;100;TARJETA SUPER RECARGA L100(8 EN 1)
-DOT072  TIGOPK;3944;50;TARJETA SUPER RECARGA L 50 (8 EN 1)
-DOT071  TIGOPK;3943;25;TARJETA SUPER RECARGA L 25 (8 EN 1)
-DOT026  TARJETAS PREPAGO DE LPS 50.00 ( 8 EN 1 )          
-DOT025  TARJETAS PREPAGO DE LPS 25.00 ( 8 EN 1 )          
-DOT030  TARJETAS PREPAGO DE LPS 100.00 (8 EN 1)           */
-
-function showSmart(vFlag){
-    var vHtml = '';
-    var fech_dtos = getYMD(0).substr(0,6);
-    var vCircuitos = [];
-    
-     //vMontoCredito = [];
-    
-    if(vFlag==0){ 
-        
-        try{
-            
-        $("#dv_forms_template2").show();
-        var dvListx= document.getElementById('dvListSmart');
-        document.getElementById('dv_forms_template2').removeChild(dvListx);
-        }catch(e){null};
-        var h = $(window).height();
-        var dvList = document.createElement('div');
-        dvList.id = 'dvListSmart';
-
-        setTimeout(function(){$.mobile.loading('show');},100);
-
-        db.transaction(function(cmd){
-            
-            //console.log(cmd);
-            
-            cmd.executeSql('SELECT serie, modelo, descripcion FROM tbl_series_tangibles where tipo = ?  order by serie', ['SMARTHPHONES'], function (cmd, results) {
-                var len = results.rows.length;
-                console.log(results);
-                
-                if(len>0){  
-                    
-                                   //   alert( 'arrreo inicial '+ vMontoCredito.length);
-                    
-                    vStrHtml = '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="showSmart(1)">Cerrar</button><h3>Smartphones</h3>';
-                    vStrHtml += '<input type="search" id="finderSmart" onkeyup="funcTblFindSmart()" placeholder="Ingresar Modelo de Smartphone"/>';
-                  
-                    vStrHtml += '<table id="smartTble1" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-                    vStrHtml += '<thead ><tr><th width="5%">#</th><th width="35%">Serie</th><th class="table-stripe ui-responsive data-priority="2" width="20%">Modelo</th><th class="table-stripe ui-responsive data-priority="2" width="50%">Descripcion</th></tr></thead>';
-                    vStrHtml += '<tbody>';                  
-                    for(i=0; i<len; i++){                    
-                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td><a href="#" onclick="setSerieSmart(\''+ results.rows[i].serie +';'+ results.rows[i].modelo  +';'+ results.rows[i].descripcion  +  '\')">'+ results.rows[i].serie +'</a></td><td>'+ results.rows[i].modelo +'</td><td>'+ results.rows[i].descripcion +'</td></tr>';
-                    }                
-                
-                vStrHtml += '</tbody> </table><br/><br/>';
-                dvList.innerHTML=vStrHtml;  
-                document.getElementById('dv_forms_template2').appendChild(dvList);
-                $("#dvListSmart").css({"left":"-1%","padding":"3%", "width":"96%", "height":h,"background-color":"white","position":"fixed","top":10,"z-index":1000,
-                                        "opacity":1, "overflow":"scroll"});
-                $("#dvListSmart").trigger('create');
-                }else{
-                    $("#dv_forms_template2").hide();
-                    alert('No tiene esta serie asignada');
-                }
-                setTimeout(function(){ $.mobile.loading('hide') },1000); 
-            });
-        });
-
-    }else{
-        try{
-        var dvListx= document.getElementById('dvListSmart');
-        document.getElementById('dv_forms_template2').removeChild(dvListx);
-        }catch(e){null};
-    }
-
 }

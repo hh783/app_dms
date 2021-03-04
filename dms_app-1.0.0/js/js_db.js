@@ -5,8 +5,6 @@ var db = openDatabase('db_dms_forms', '1.0', 'DB for DMS App Forms', 30 * 1024 *
 db.transaction(function(cmd){
     
     var vFlag = 0;
-    //cmd.executeSql('drop table tbl_series_tangibles');
-    //cmd.executeSql('drop table tbl_series_tangibles_br');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS users (id unique, pwd, name, phone, email, job_title, status, login, type, id_dms, license, id_pdv_dlr ,horus_completo)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS params (id unique, dvalue)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_kmtrs (user, fech, lat1, lng1, kmtr)');      
@@ -21,8 +19,6 @@ db.transaction(function(cmd){
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_visitas_pdv(id_pdv, fecha_ymd, usuario)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_ejec_sucursales(anomes, id_dealer, nombre_dealer, id_sucursal, nombre_sucursal, producto, ejecucion, meta, res, unidad)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_fordis04_venta_sugerida (anio, semana, id_pdv, mon, mar, mie, jue, vie, sat, dom, promedio_diario)');
-    cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_series_tangibles (serie unique, usuario, modelo, descripcion, fecha_descarga, precio, tipo)');
-    cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_series_tangibles_br (serie unique, usuario, id_pdv, id_fordis)');
     
     db.transaction(function(cmd){   
         cmd.executeSql('SELECT * FROM users where id =?', ['admin'], function (cmd, results) {
@@ -47,7 +43,7 @@ function ejecutaSQL(vQuery, vFlag){
             cmd.executeSql(vQuery, [], function(){ 
                 console.log('success');
             },function(e){
-                //alert(e);
+                //alert('e');
                 console.log('Error' + e.error);
                 //console.log(e);
                 //window.plugins.toast.show('Error..', 1000, 'bottom');
