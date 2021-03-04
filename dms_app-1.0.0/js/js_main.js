@@ -1,4 +1,4 @@
-// JavaScript General App
+
 
 var userWS = '69BA4B9D76B7C3452E2A48B7BF9790FE';
 var pdwWS  = '0BAD6CE456FCFBEF59544697D43E06D1';
@@ -9,7 +9,11 @@ var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
 var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
+//var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
+//var ws_url = 'https://192.168.161.20/ws_so/service_so.php'; 
+
 var vMontoCredito = [];
+var vVentaSugerida = [];
 var vDatosUsuario ={"user":"", "login":"", "name":"", "phone":0, "email":"na", "job":"na", "id_dms":0, "perfil":0, "id_pdv_dlr":0};
 var vTitle ="S.O. DMS Experience";
 var map;
@@ -25,6 +29,7 @@ var bgGeo;
 var vFormData = {};
 var vFormsPendientes = [];
 var vFileG;  //Variable para foto del usuario
+var vIdPdvG // variable para fordis04
 
 var lat1, lng1;
 var vDistance = 0;
@@ -337,7 +342,10 @@ function changeSemanaPlan(cbsem){
 }
 
 function show_datos_user(vUser){
+    console.log(vUser);
+    
     db.transaction(function(cmd2){
+        
         cmd2.executeSql("SELECT * FROM users where id = ?", [vUser], function (cmd2, results) {
             var len = results.rows.length;
             if(len>0){
@@ -1098,6 +1106,7 @@ function desplegarForm(vIdForm, callback){
     var vStrFrom = '';
     var vItems;
     var vFlag = 0;
+    vIdFormulario = vIdForm;
 
     //console.log(vIdForm);
     db.transaction(function(cmd){   
@@ -1210,12 +1219,15 @@ function updateForms(){
             });
         },
         success: function(data){
-            //console.log(data);
+            console.log(data);
             vQry = '';
             vQry = 'DELETE FROM tbl_forms';
+
+            
             ejecutaSQL(vQry, 0); 
 
             for(i=0;i<data.length; i++){
+                
                 vQry = 'INSERT INTO tbl_forms (id, desc, type, version, dtos, scripts, udt_dt) VALUES(';
                 vQry += '\'' + data[i].id + '\',\'' + data[i].desc + '\','  + data[i].tipo + ',' + data[i].ver + ',\'' + JSON.stringify(data[i].data) + '\',\''+ data[i].vscript +'\',\'' + data[i].udt_dt + '\')';                
                 //console.log(vQry);
@@ -2158,6 +2170,7 @@ function sendCierreVtas(){
         });  
 }
 
+
 function getPlanningDMS(){
     var vResult;
     var weekNum;
@@ -2167,6 +2180,30 @@ function getPlanningDMS(){
     weekNum = getWeekNumber(fech);
 
     $.mobile.loading('show');
+
+    $.ajax({
+            url:ws_url,
+            type:'POST',
+            data:{m:309,vx:userWS, vy:pdwWS, usuario:vDatosUsuario.user.toUpperCase()},        
+            dataType:'json',
+            success: function(data){
+                console.log(data);
+                var json = eval(data);
+                
+                if( json.length>0 ){                    
+                    ejecutaSQL('delete from tbl_fordis04_venta_sugerida', 0);                    
+                    for(var i=0; i<json.length; i++){                        
+                        ejecutaSQL('insert into tbl_fordis04_venta_sugerida (anio, semana, id_pdv, mon, mar, mie, jue, vie, sat, dom, promedio_diario) values("'+json[i].anio+'","'+json[i].semana+'","'+json[i].id_pdv+'","'+json[i].mon+'","'+json[i].mar+'", "'+json[i].mie+'", "'+json[i].jue+'", "'+json[i].vie+'", "'+json[i].sat+'", "'+json[i].dom+'", "'+json[i].promedio_diario+'")',0);                                                         
+                    }                       
+                    setTimeout(function(){$.mobile.loading('hide')},3000);                       
+                }               
+            },error: function(error){
+                console.log(error);
+                $.mobile.loading('hide');
+            }
+    });
+
+    
 
     $.ajax({
             url:ws_url,
@@ -2182,7 +2219,9 @@ function getPlanningDMS(){
                     ejecutaSQL(vQry, 0);
                     setTimeout(function(){
                         //console.log(vResult.length);
+
                         for(i=0; i<vResult.plan.length; i++){
+                            //console.log(vResult.plan[i]);
                             query = 'insert into tbl_plan_dms(aniomes, semana_anio, usuario, cod_empleado_dms, circuit, nombre_circuito, id_pdv, nombre_pdv, dias_semana, ymd_dia, monto_credito) values(';
                             query += vResult.plan[i].aniomes + ',';
                             query += vResult.plan[i].semana_anio + ',';
@@ -2196,9 +2235,13 @@ function getPlanningDMS(){
                             query += vResult.plan[i].ymd_dia + ',';
                              //query += '1000)';
                             query += vResult.plan[i].monto_credito +')';
+
+                            //console.log(query);
+                            //break;
                             ejecutaSQL(query, 0);
                         }
 
+                        
                         //Insert Fichas PDVs
                         for(i=0; i<vResult.fichas.length; i++){
                             ejecutaSQL('delete from tbl_ficha_pdv where id_pdv =' + vResult.fichas[i].id_pdv , 0);
@@ -2221,7 +2264,7 @@ function getPlanningDMS(){
 
 
                         }, 3000);
-                            
+
                         
                         showPlanSemana(weekNum[1], getYMD(0).toString().substr(0,6));
                     }, 800);
@@ -2261,6 +2304,7 @@ function getPlanningDMS(){
                     },5000);
                 }
             }); 
+            
 }
 
 function showPlanSemana(vNumSemana,vAniomes){
@@ -2383,7 +2427,8 @@ function findPDVFordis(vFlag){
     
      //vMontoCredito = [];
     
-    if(vFlag==0){        
+    if(vFlag==0){ 
+        
         try{
         var dvListx= document.getElementById('dvListPDVs');
         document.getElementById('dv_forms_template').removeChild(dvListx);
@@ -2402,7 +2447,8 @@ function findPDVFordis(vFlag){
                     
                     for(k=0;k<len;k++){
                         
-                         vMontoCredito.push({"id_pdv":results.rows[k].id_pdv, "monto_c":results.rows[k].monto_credito});
+                        vMontoCredito.push({"id_pdv":results.rows[k].id_pdv, "monto_c":results.rows[k].monto_credito});
+                        
                         if(vCircuitos.indexOf(results.rows[k].nombre_circuito)==-1){
                             vCircuitos.push(results.rows[k].nombre_circuito);
                         }
@@ -2434,8 +2480,6 @@ function findPDVFordis(vFlag){
             });
         });
 
-        
-
     }else{
         try{
         var dvListx= document.getElementById('dvListPDVs');
@@ -2459,12 +2503,132 @@ function getMontoCredito(id_pdv, vIdQ){
     }
 }
 
+function getVentaSugerida(id_pdv, vIdQ){
+    obj=null
+    for(i=0;i<vVentaSugerida.length;i++){
+        if(parseInt(vVentaSugerida[i].id_pdv) == parseInt(id_pdv)){
+            obj = documente.getElementById('' + vIdQ);
+            obj.value = parseInt(vVentaSugerida[i].promedio_diario) ;
+            break;
+        }
+    }
+}
+
+/*
+function getVentaEstimada(id_pdv){
+
+    obj=null
+
+    var fecha = new Date();
+    var dia = fecha.getDay();
+    obj = documente.getElementById('' + vIdQ);
+    for(i=0;i<vVentaSugerida.length;i++){
+
+        if(parseInt(vVentaSugerida[i].id_pdv) == parseInt(id_pdv)){
+
+            switch(dia){
+
+                case 0:  // domingo
+                obj.value = parseInt(vVentaSugerida[i].dom) ;
+                break;
+
+                case 1: // lunes 
+                obj.value = parseInt(vVentaSugerida[i].mon) ;
+                break;
+
+                case 2: // martes
+                obj.value = parseInt(vVentaSugerida[i].mar) ;
+                break;
+
+                case 3: // miercoles
+                obj.value = parseInt(vVentaSugerida[i].mie) ;
+                break;
+
+                case 4: // jueves
+                obj.value = parseInt(vVentaSugerida[i].jue) ;
+                break;
+
+                case 5: // viernes
+                obj.value = parseInt(vVentaSugerida[i].vie) ;
+                break;
+
+                case 6: // sabado
+                obj.value = parseInt(vVentaSugerida[i].sat) ;
+                break;
+
+            } // fin del switch
+
+            break;
+
+    } // fin del if
+
+    }// fin dell for
+
+}// fin del funcion
+
+*/
 function setPDVFordis(vIdPDV){
     //Aqui se ejecuta el set del IDPDV;
     obj = document.getElementById('Q2');
     obj.value = vIdPDV;
-     $("#Q2").trigger('change');
+    vIdPdvG = vIdPDV;
+
+    vQuery = '';
+    vMontoSugerido = 0;
+    vMontoEstimado = 0;
+    var fecha = new Date();
+    var dia = fecha.getDay();
+
+     //$("#Q2").trigger('change');
     findPDVFordis(1);
+    setTimeout(() => {
+        if (vIdFormulario =='FORDIS04'){
+            //set Venta sugerida        
+            db.transaction(function(cmd2){
+                
+                vQuery = "SELECT a.anio, a.semana, a.id_pdv, a.mon, a.mar, a.mie, a.jue, a.vie, a.sat, a.dom, a.promedio_diario";
+                vQuery +=  "  FROM tbl_fordis04_venta_sugerida a ";
+                vQuery +=  "  where a.id_pdv='" + parseInt(vIdPdvG) + "'";
+                //console.log(vQuery);
+                cmd2.executeSql(vQuery, null,function (cmd2, results) {
+                    console.log(results.rows);
+                    var len = results.rows.length;
+                    if (len > 0) {
+                        
+                        vMontoSugerido = parseInt(results.rows[0].promedio_diario);
+                        switch(dia){
+                            case 0:  // domingo
+                            vMontoEstimado = parseInt(results.rows[0].dom) ;
+                            break;        
+                            case 1: // lunes 
+                            vMontoEstimado = parseInt(results.rows[0].mon) ;
+                            break;        
+                            case 2: // martes
+                            vMontoEstimado = parseInt(results.rows[0].mar) ;
+                            break;        
+                            case 3: // miercoles
+                            vMontoEstimado = parseInt(results.rows[0].mie) ;
+                            break;        
+                            case 4: // jueves
+                            vMontoEstimado = parseInt(results.rows[0].jue) ;
+                            break;        
+                            case 5: // viernes
+                            vMontoEstimado = parseInt(results.rows[0].vie) ;
+                            break;        
+                            case 6: // sabado
+                            vMontoEstimado = parseInt(results.rows[0].sat) ;
+                            break;            
+                        } // fin del switch 
+                        alert("* PDV "+ vIdPdvG+" *\nMonto Sugerido: L. " + vMontoSugerido + "\nMonto Estimado: L. " + vMontoEstimado + "\n");
+                    }                  
+                    /*
+                    for(var i=0;i<len; i++){
+                        vVentaSugerida.push({anio:results.rows[i].anio, semana:results.rows[i].semana, id_pdv:results.rows[i].id_pdv, mon:results.rows[i].mon, mar:results.row[i].mar, mie:results.row[i].mie, jue:results.row[i].jue, vie:results.row[i].vie, sat:results.rows[i].sat, dom:results.row[i].dom, promedio_diario:results.row[i].promedio_diario });
+                    }*/
+                });
+            }); 
+        }
+    }, 500);
 }
 
 function changCircSearchPlan(vobj){
@@ -3113,6 +3277,13 @@ function llenarPDVMarcacion(){
 
 function guardarMarcacion(){
 
+     $.mobile.loading( 'show', {
+                                text: 'Cargando...',
+                                textVisible: true,
+                                theme: 'a',
+                                html: ""
+                            });
+
     navigator.geolocation.getCurrentPosition(function(position){ // sucesss
 
         //alert('marcaciones');
@@ -3123,28 +3294,43 @@ function guardarMarcacion(){
 
         //alert( fecha );
 
-        if ( $("#telefono").val()!='' && $("#estadoPago").val()!='99' ){
+        if ( $("#telefono").val()!='' && $("#estadoPago").val()!='99'   ){
 
-            var sql="insert into tbl_horus_marcas_esp (LATITUD,LONGITUD,ID_PDV,FECHA_COMPLETA,USUARIO,NUMERO_CLIENTE,ESTADO_PAGO,METODO_PAGO,MONTO_PAGO) values";
-                sql+="('"+position.coords.latitude+"','"+position.coords.longitude+"','"+$("#marcancionE").val()+"','"+fecha+"','"+vDatosUsuario.user+"',";
-                sql+="'"+$("#telefono").val()+"','"+$("#estadoPago").val()+"', '"+$("#metodoPago").val()+"','"+$("#monto").val()+"') ";
-                console.log(sql); 
-                ejecutaSQL(sql,0); 
-                alert('Marcacion Guardada de forma exitosa');
-                $('#marcancionE').val('SELECCIONE').change();
-                $("#estadoPago").val(99).change();
-                $("#monto").val(0)  
-                $("#metodoPago").val(99).change();
-                $("#telefono").val('');
+            if ( $("#estadoPago").val()==1 && (  $("#metodoPago").val() =='99'  || $("#monto").val() ==''  ) ){
+
+                  $.mobile.loading('hide');
+                alert('Faltan datos de pago'); 
+
+            }else {
+
+
+            
+
+                var sql="insert into tbl_horus_marcas_esp (LATITUD,LONGITUD,ID_PDV,FECHA_COMPLETA,USUARIO,NUMERO_CLIENTE,ESTADO_PAGO,METODO_PAGO,MONTO_PAGO) values";
+                    sql+="('"+position.coords.latitude+"','"+position.coords.longitude+"','"+$("#marcancionE").val()+"','"+fecha+"','"+vDatosUsuario.user+"',";
+                    sql+="'"+$("#telefono").val()+"','"+$("#estadoPago").val()+"', '"+$("#metodoPago").val()+"','"+$("#monto").val()+"') ";
+                    console.log(sql); 
+                    ejecutaSQL(sql,0);
+                    $.mobile.loading('hide'); 
+                    alert('Marcación Guardada de forma exitosa');
+                    $('#marcancionE').val('SELECCIONE').change();
+                    $("#estadoPago").val(99).change();
+                    $("#monto").val(0)  
+                    $("#metodoPago").val(99).change();
+                    $("#telefono").val('');
+
+            }
 
         }else{
 
+            $.mobile.loading('hide');
             alert('Faltan Datos');
 
         }
             
     }, function(){ // error 
 
+            $.mobile.loading('hide');
             alert('No fue posible obtener sus coordenadas, favor verificar el estado del GPS de su teléfono');
 
     }, { enableHighAccuracy: true });   // fin getcurrent position  
@@ -3167,17 +3353,26 @@ function enviarMarcacion(){
 
     if ($("#telefono").val()!='' && $("#estadoPago").val()!='99' ){  //en caso que el formulario tenga datos 
 
-        navigator.geolocation.getCurrentPosition(function(position){ // sucesss
 
-        //alert('marcaciones');
-        var latitud = position.coords.latitude;
-        var logitud = position.coords.longitude;
-        var date = new Date().formatoFecha();
-        var fecha=date;
+           if ( $("#estadoPago").val()==1 && (  $("#metodoPago").val() =='99'  || $("#monto").val() ==''  ) ){
 
-        //alert( fecha );
+                 sendMarksE();
 
-         
+
+            }else {
+
+
+                navigator.geolocation.getCurrentPosition(function(position){ // sucesss
+
+                //alert('marcaciones');
+                var latitud = position.coords.latitude;
+                var logitud = position.coords.longitude;
+                var date = new Date().formatoFecha();
+                var fecha=date;
+
+                //alert( fecha );
+
+                 
 
                 var sql="insert into tbl_horus_marcas_esp (LATITUD,LONGITUD,ID_PDV,FECHA_COMPLETA,USUARIO,NUMERO_CLIENTE,ESTADO_PAGO,METODO_PAGO,MONTO_PAGO) values";
                     sql+="('"+position.coords.latitude+"','"+position.coords.longitude+"','"+$("#marcancionE").val()+"','"+fecha+"','"+vDatosUsuario.user+"',";
@@ -3192,50 +3387,22 @@ function enviarMarcacion(){
                     $("#telefono").val('');
                     sendMarksE();
                         
-            
-        }, function(){ // error 
-
-                alert('No fue posible obtener sus coordenadas, favor verificar el estado del GPS de su teléfono');
-
-        }, { enableHighAccuracy: true }); 
-
-
-
-
-
-                // navigator.geolocation.getCurrentPosition(function(position){ // sucesss // 
-
-                //     //alert('marcaciones');
-                // var latitud = position.coords.latitude;
-                // var longitud = position.coords.longitude;
-                // var date = new Date().formatoFecha();
-                // var fecha=date;
-
-                // envio.push({id_pdv: $("#marcancionE").val() ,latitud:position.coords.latitude, longitud:position.coords.longitude, 
-                // fecha_completa:fecha , usuario:vDatosUsuario.user,numero_cliente:$("#telefono").val(),
-                //    estado_pago:$("#estadoPago").val(), metodo_pago: $("#metodoPago").val(), monto_pago: $("#monto").val()});   
-
                     
-                    
-            
-                // }, function(){ // error 
+                }, function(){ // error 
 
-                //         alert('No fue posible obtener sus coordenadas, favor verificar el estado del GPS del dispositivo');
+                        alert('No fue posible obtener sus coordenadas, favor verificar el estado del GPS de su teléfono');
 
-                // }, { enableHighAccuracy: true }); 
+                }, { enableHighAccuracy: true }); 
 
 
-                // $('#marcancionE').val('SELECCIONE').change();
-                // $("#estadoPago").val(99).change();
-                // $("#monto").val(0)  
-                // $("#metodoPago").val(99).change();
-                // $("#telefono").val('');    
+        }
+
 
             } else {
 
                     sendMarksE();
 
-            } // fin del if   
+    } // fin del if   
 
     
 
@@ -3336,7 +3503,7 @@ function sendMarksE() {
 
                                 console.log('entre al final')
                                 $.mobile.loading('hide');
-                                alert('Maracaciones Enviadas de forma Exitosa');
+                                alert('Marcaciones Enviadas de forma Exitosa');
 
                             } 
 
