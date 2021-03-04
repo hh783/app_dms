@@ -8,7 +8,7 @@ var vIdFormulario ='XO';
 var vLat = 0;
 var vLng = 0;
 //var ws_url = 'http://localhost/ws_so/service_so.php'; 
-/*var ws_url = 'https://190.4.63.207/ws_so/service_so.php'; */
+//var ws_url = 'https://190.4.63.207/ws_so/service_so.php';
 var ws_url = 'https://gpsboc.tigo.com.hn/ws_so/service_so.php'; 
 //var ws_url = 'https://192.168.161.20/ws_so/service_so.php'; 
 
@@ -798,9 +798,6 @@ function onSuccess(position){
         }else{
             vDistance = 0;
         }
-        if(isNaN(vDistance)){
-            vDistance = 0;
-        }
         
         vQre = 'insert into tbl_kmtrs (user, fech, lat1, lng1, kmtr) ';
         vQre += 'values (\''+ vDatosUsuario.user +'\',' + (getYMD(0) + ''+ getHMS()) +',' + vLat +',' + vLng +','+ vDistance +')';
@@ -1429,8 +1426,6 @@ function envioFormsPend(){
 }
 
 function continuarForms(){   
-
-
     listSeriesFinal = [];
     var tempForm = [];
     var temArr = [];
@@ -1445,6 +1440,7 @@ function continuarForms(){
     if(form_id[0]=="PFORDIS04"){
         vFlagTan = $("#Q3").val();
         vContTan = 0;
+
         vContTan += parseInt($("#Q6").val());
         vContTan += parseInt($("#Q7").val());
         vContTan += parseInt($("#Q8").val());
@@ -1456,7 +1452,7 @@ function continuarForms(){
         vContTan += parseInt($("#Q14").val());
         vContTan += parseInt($("#Q15").val());
 
-       
+        
         for(let srs of listSeries.SCRATCH_SR_16){
             listSeriesFinal.push(srs)
         }
@@ -1488,7 +1484,6 @@ function continuarForms(){
             listSeriesFinal.push(srs)
         }
         count_series = listSeriesFinal.length;
-		 listSeries = {SIMCARDS:[],SMART:[],SCRATCH_SR_16:[],SCRATCH_TP_25:[],SCRATCH_TP_50:[],SCRATCH_TP_100:[],SCRATCH_SR_25:[],SCRATCH_SR_50:[],SCRATCH_SR_100:[],BLIS:[]};
     }
     //console.log(listSeriesFinal);
 
@@ -1502,11 +1497,9 @@ function continuarForms(){
     //console.log('series' + count_series + "/tan:" + vContTan);
 
     try{
-     
     if(vFlagTan=='SI' && count_series==0){
         throw 101;
     }
-    
     if(vFlagTan=='SI' && (count_series!=vContTan)){
         throw 101;
     }
@@ -1558,7 +1551,7 @@ function continuarForms(){
         vFormData = tempForm;
         ////console.log(vFormData[0].id_form);
         prevForm(vFormData[0].id_form, 1);
-      //  listSeries = {SIMCARDS:[],SMART:[],SCRATCH_SR_16:[],SCRATCH_TP_25:[],SCRATCH_TP_50:[],SCRATCH_TP_100:[],SCRATCH_SR_25:[],SCRATCH_SR_50:[],SCRATCH_SR_100:[],BLIS:[]};
+
     }, 4000);
     }catch(e){
         //console.log(e);
@@ -1567,79 +1560,55 @@ function continuarForms(){
          
          varx = $("#Q6").val();
          cant = listSeries.SCRATCH_SR_16.length
-         if(varx!=cant )
-         {
-            msj += 'TP VAS S.R. L. 16\n'  ;  
-         }  
-
+         if(varx!=cant && cant != 0)
+         msj += 'SR-16\n'
+           
          varx = $("#Q7").val();
-         cant = listSeries.SCRATCH_TP_25.length;
-         if(varx!=cant )
-         {
-         msj += 'TP RECARGA L. 25\n';
-         }
+         cant = listSeries.SCRATCH_TP_25.length
+         if(varx!=cant && cant != 0)
+         msj += 'TP-25\n'
 
          varx = $("#Q8").val();
-         cant = listSeries.SCRATCH_TP_50.length ;
-         if(varx!=cant )
-         {
-         msj += 'TP RECARGA L. 50\n';
-         }
+         cant = listSeries.SCRATCH_TP_50.length
+         if(varx!=cant && cant != 0)
+         msj += 'TP-50\n'
 
          varx = $("#Q9").val();
-         cant = listSeries.SCRATCH_TP_100.length;
-         if(varx!=cant )
-         {
-         msj += 'TP RECARGA L. 100\n';
-         console.log("array"+varx);
-         console.log("cant"+cant);
-         }
+         cant = listSeries.SCRATCH_TP_100.length
+         if(varx!=cant && cant != 0)
+         msj += 'TP-100\n'
 
          varx = $("#Q10").val();
-         cant = listSeries.SCRATCH_SR_25.length;
-         if(varx!=cant  )
-         {
-         msj += 'TP VAS S.R. L. 25\n';
-         }
+         cant = listSeries.SCRATCH_SR_25.length
+         if(varx!=cant && cant != 0)
+         msj += 'SR-25\n'
 
          varx = $("#Q11").val();
-         cant = listSeries.SCRATCH_SR_50.length;
-         if(varx!=cant )
-         {
-         msj += 'TP VAS S.R. L. 50\n';
-         }
+         cant = listSeries.SCRATCH_SR_50.length
+         if(varx!=cant && cant != 0)
+         msj += 'SR-50\n'
 
          varx = $("#Q12").val();
-         cant = listSeries.SCRATCH_SR_100.length;
-         if(varx!=cant )
-         {
-         msj += 'TP VAS S.R. L. 100\n';
-         }
+         cant = listSeries.SCRATCH_SR_100.length
+         if(varx!=cant && cant != 0)
+         msj += 'SR-100\n'
 
          varx = $("#Q13").val();
-         cant = listSeries.SIMCARDS.length;
-         if(varx!=cant )
-         {
-         msj += 'SIMCARDS\n';
-         console.log("array"+varx);
-         console.log("cant"+cant);
-         }
+         cant = listSeries.SIMCARDS.length
+         if(varx!=cant && cant != 0)
+         msj += 'SIMCARDS\n'
 
          varx = $("#Q14").val();
-         cant = listSeries.SMART.length;
-         if(varx!=cant )
-         {
-         msj += 'SMARTPHONES\n';
-         }
+         cant = listSeries.SMART.length
+         if(varx!=cant && cant != 0)
+         msj += 'SMARTPHONES\n'
 
          varx = $("#Q15").val();
-         cant = listSeries.BLIS.length;
-         if(varx!=cant )
-         {
-         msj += 'BLISTER\n';
-         }
+         cant = listSeries.BLIS.length
+         if(varx!=cant && cant != 0)
+         msj += 'BLISTER\n'
 
-            alert('Tienes que cargar todas las series, favor cargar:\n'+msj); //msj
+            alert('Falta Cargar Series de:\n'+msj); //msj
         }else{            
             alert('Error Generando Formulario');
         }
@@ -1665,7 +1634,6 @@ function envioForm(){
                     vQuery = 'INSERT INTO tbl_forms_filled (id_form, dtos, date, status, lat, lng) ';
                     vQuery += 'VALUES(\'' +  vFormData[0].id_form + '\',\'' + (vFormData[0].vdata).toString() + '\',' + vFormData[0].fech + ',1,';
                     vQuery += vFormData[0].lat + ','+ vFormData[0].lng  +')';
-
                     ejecutaSQL(vQuery, 0);        
 
                     $.mobile.loading( 'show', {
@@ -1717,9 +1685,7 @@ function envioForm(){
                     }
                     for(let vX of listSeriesFinal){
                         ejecutaSQL("delete from tbl_series_tangibles  where serie = '"+ vX + "'", 0);
-                       // listSeriesFinal = '';
                     }
-					
                 }
 
                 setTimeout(function(){  
@@ -1791,7 +1757,7 @@ function guardarForm(){
 
 
 function prevForm(vIdForm, vFlag){
-    //console.log(vIdForm);
+    ////console.log(vIdForm);
     pgActual = 101;
     var StrHtml = '';
     var arrItems = [];
@@ -1946,25 +1912,24 @@ function sendSerieTangible(vArDatos){
 
     var result;
     var strImg = '';
-	//console.log(vArDatos);
+    ////console.log(vArDatos);
     $.ajax({
         url:ws_url,
         type:'POST',
         data:{m:315,vx:userWS, vy:pdwWS, ar_items:vArDatos},        
         dataType:'text',
         success: function(data){
-			console.log(data);
-            //result = eval(data);         
+            //result = eval(data);
+            //console.log(data);
             if(data=='SUCCESS/'){                   
                 setTimeout(function(){
-					//console.log(vArDatos);
                     for(let vX of vArDatos){
                         ejecutaSQL('DELETE FROM tbl_series_tangibles where serie=\'' + vX.serie + '\'', 0);
                         ejecutaSQL('DELETE FROM tbl_series_tangibles_br where serie=\'' + vX.serie + '\'', 0);
                     } 
                 }, 1000);
             }else{
-                alert('No se enviaron series..');
+                alert('Error Enviando Series..');
             }            
         }, 
         error: function(error){
@@ -2445,21 +2410,15 @@ function getseries(){
                         ejecutaSQL('insert into tbl_series_tangibles (serie, usuario, modelo, descripcion, fecha_descarga, precio, tipo) values("'+json[i].serie+'","'+json[i].usuario+'","'+json[i].modelo+'","'+json[i].descripcion_modelo+'","'+fech+'",'+json[i].precio+',"'+json[i].tipo+'")',0);                                                         
                         //ejecutaSQL('insert into tbl_series_tangibles (serie, usuario, modelo, descripcion, fecha_descarga, precio, tipo) values("'+json[i].serie+'","'+json[i].usuario+'","'+json[i].modelo+'","'+json[i].descripcion_modelo+'","'+fech+'",1,"NA")',0);                                                         
                     }                       
-                    setTimeout(function(){$.mobile.loading('hide')},3000);   
-                    
-                    alert('Series Actualizadas Correctamente'); 
+                    setTimeout(function(){$.mobile.loading('hide'), alert('Series Actualizadas Correctamente'); },3000);                       
                 }               
             },error: function(error){
                 //console.log(error);
                 $.mobile.loading('hide');
-
-
             }
     });
 
-   }
-   
-   
+   } 
 function getPlanningDMS(){
     var vResult;
     var weekNum;
@@ -2719,7 +2678,7 @@ function funcTblFindSmart() {
     table = document.getElementById("smartTble1");
     tr = table.getElementsByTagName("tr");
     for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[1];
+      td = tr[i].getElementsByTagName("td")[2];
       //console.log(tr[i]);
       if (td) {
         if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
@@ -2730,7 +2689,7 @@ function funcTblFindSmart() {
       }       
     }
   }
-function funcTblSimcard() { 
+function funcTblSimcard() { //HECTOR PRUEBA
   var input, filter, table, tr, td, i;
   input = document.getElementById("finderSimcard1");
   filter = input.value.toUpperCase();
@@ -2764,7 +2723,7 @@ function funcTblFindPdv2() {
     }       
   }
 }
-function funcTblFindSimcard2() { 
+function funcTblFindSimcard2() { //HECTOR PRUEBA
   var input, filter, table, tr, td, i;
   input = document.getElementById("finderSimcard2");
   filter = input.value.toUpperCase();
@@ -2869,8 +2828,7 @@ function findSimcard(vFlag,vCantSim){ //linea 2513
             case 0:
                  listSeries.SIMCARDS =[];
                  vTipo = 'SIMCARD';
-                 vQuery = "SELECT * FROM tbl_series_tangibles where modelo in ('SIM013','SIM018') order by serie";
-                 vIdQ = 'Q13'; 
+                 vQuery = "SELECT * FROM tbl_series_tangibles where tipo = 'SIMCARD' order by serie";
             break;
             case 1:
                  listSeries.SMART =[];
@@ -2980,11 +2938,9 @@ function findSimcard(vFlag,vCantSim){ //linea 2513
                         } 
                         objSerie = []; 
                     }                           
-                    //vStrHtml += "</tbody> </table><br/><button class=\"ui-btn\" onclick=\"saveSeries("+vFlag+",'"+ vIdQ +"')\">Aceptar</button><br/>"; 
-                  
-                    setTimeout(function(){ $.mobile.loading('hide'); }, 1500);  
-                    
-                      /*
+                    vStrHtml += "</tbody> </table><br/><button class=\"ui-btn\" onclick=\"saveSeries("+vFlag+",'"+ vIdQ +"')\">OK</button><br/>"; 
+
+                    setTimeout(function(){ $.mobile.loading('hide'); }, 1500);    
                     Swal.fire({
                     title:'Series Asignadas!',
                     text:'Su codigo ha sido enviado al numero ingresado',
@@ -2992,29 +2948,11 @@ function findSimcard(vFlag,vCantSim){ //linea 2513
                     icon:'success',
                     showConfirmButton: false
                     });
-                    */
-                    //console.log(listSeries);
-		             Swal.fire({
-                        title:'Series Asignadas!',
-                        text:'Su codigo ha sido enviado al numero ingresado',
-                        html: '<html> '+ vStrHtml +'  </html>',
-                        icon:'success',
-                        showConfirmButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: 'Aceptar',
-                        cancelButtonText: 'Cancelar'
-                        }).then((result) => {
-                            if (result.value) {
-     
-                              saveSeries(vFlag, vIdQ);
-         
-                            }
-                          });
 
+                    //console.log(listSeries);
 
                 }else{
-                    alert('No tienes suficientes series asignadas, tienes: ' +  len);
-					setTimeout(function(){ $.mobile.loading('hide'); }, 500);  
+                    alert('No tienes Suficientes series ' +  len);
                 }
                     //showlistSeries(0);
                 
@@ -3094,13 +3032,11 @@ function saveSeries(vFl, vQ){
     ////console.log(cantItem);
     if(vFl==0){        
         listSeries.SIMCARDS = arrTemp;
-        vQobj.value = cantItem.toString();
-       
     }
     else if(vFl==2){        
         listSeries.SCRATCH_SR_16 = arrTemp;      
         vQobj.value = cantItem.toString();
-        
+        //console.log(listSeries.SCRATCH_SR_16);
     }
     else if(vFl==3){        
         listSeries.SCRATCH_TP_25 = arrTemp;      
@@ -3263,7 +3199,7 @@ function setSerieSmart(vSerie){
         }
     }
     if(flag==0){
-        listSeries.SMART.push({serie:serieSplit[0],  modelo:serieSplit[1],desc:serieSplit[2]});  
+        listSeries.SMART.push({serie:serieSplit[0], desc:serieSplit[1]});  
         var dvListx= document.getElementById('dvListSmart');
         document.getElementById('dv_forms_template2').removeChild(dvListx);   
         $("#dv_forms_template2").hide();
@@ -4252,13 +4188,12 @@ function  scaner_list(vFlag){
     }
     //vUsr ='APP.DMS.WILLIAM.NUNEZ';
     
-    //vSerie = ['12002820007530','12002820007531'];
+    vSerie = ['12002820007530','12002820007531'];
     //console.log(vUsr);
     
     
     cordova.plugins.barcodeScanner.scan(
     function (result) {
-		flag = 0;
         /*alert("We got a barcode\n" +
                 "Result: " + result.text + "\n" +
                 "Format: " + result.format + "\n" +
@@ -4269,37 +4204,24 @@ function  scaner_list(vFlag){
         { 
             //alert(result.text);                   
             vSerie.push(result.text);
-			
             for(let x of vSerie){
-				
-				for(let xs of listSeries.SMART){
-					if(x==xs.serie){
-						flag=1;
-						break;
-					}
-				}
-				
-				if(flag==0){					
-					db.transaction(function(cmd){   
-					cmd.executeSql("SELECT * FROM tbl_series_tangibles where serie = ?", [x], function (cmd, results) {
-							var len = results.rows.length, i;                    
-							i = 0;        
-							////console.log(vSerie + '/' + len);        
-							if(len > 0){
-								for(i=0;i<len;i++){
-									objSerie = {"serie":results.rows.item(i).serie, "precio":results.rows.item(i).precio, "modelo":results.rows.item(i).modelo, "desc":results.rows.item(i).descripcion, "tipo":results.rows.item(i).tipo};
-									break;
-								}
-								listSeries.SMART.push(objSerie);                    
-							}else{
-								alert('Serie no encontrada');
-							}
-							showlistSeries(0);
-						});
-					});					
-				}else{
-					alert('Serie Duplicada..');
-				}
+                db.transaction(function(cmd){   
+                cmd.executeSql("SELECT * FROM tbl_series_tangibles where serie = ?", [x], function (cmd, results) {
+                        var len = results.rows.length, i;                    
+                        i = 0;        
+                        ////console.log(vSerie + '/' + len);        
+                        if(len > 0){
+                            for(i=0;i<len;i++){
+                                objSerie = {"serie":results.rows.item(i).serie, "precio":results.rows.item(i).precio, "modelo":results.rows.item(i).modelo, "desc":results.rows.item(i).descripcion, "tipo":results.rows.item(i).tipo};
+                                break;
+                            }
+                            listSeries.SMART.push(objSerie);                    
+                        }else{
+                            alert('Serie no encontrada');
+                        }
+                        showlistSeries(0);
+                    });
+                });
         
             }
         }else{
@@ -4327,12 +4249,11 @@ function showlistSeries(vFlag){
     {
         vStrHtml += '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="showlistSeries(1)">Cerrar</button><h3>Listado Series</h3>';
         vStrHtml += '<table id="pdvsTble2" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-        vStrHtml += '<thead><tr><th width="35%" data-priority="0">Serie</th><th data-priority="0">Modelo</th><th data-priority="0">Descripcion</th></tr></thead>';
+        vStrHtml += '<thead><tr><th width="50%" data-priority="0">Serie</th><th data-priority="0">Descripcion</th></tr></thead>';
         vStrHtml += '<tbody>';                  
         for(let rowx of listSeries.SMART){
-        //console.log(rowx);
-            vStrHtml += '<tr><td width="40%">'+ rowx.serie +'</td><td>'+  rowx.modelo +'</td><td>'+ rowx.desc +'</td></tr>';  
-           // console.log(listSeries.SMART);                  
+        ////console.log(rowx);
+            vStrHtml += '<tr><td width="40%">'+ rowx.serie +'</td><td>'+ rowx.desc +'</td></tr>';                    
         }                 
         vStrHtml += '</tbody> </table><br /><br /><button style="width:100px; height:30px; padding:0px" onclick="scaner_list(1)">Escanear</button>';
         vStrHtml += '<button style="width:100px; height:30px; padding:0px;" onclick="showSmart(0)">Buscar </button>';
@@ -4508,22 +4429,21 @@ function showSmart(vFlag){
             
             //console.log(cmd);
             
-            cmd.executeSql('SELECT serie, modelo, descripcion FROM tbl_series_tangibles where tipo = ?  order by serie', ['SMARTHPHONES'], function (cmd, results) {
+            cmd.executeSql('SELECT serie, descripcion FROM tbl_series_tangibles where tipo = ?  order by serie', ['SMARTHPHONES'], function (cmd, results) {
                 var len = results.rows.length;
-                console.log(results);
                 
                 if(len>0){  
                     
                                    //   alert( 'arrreo inicial '+ vMontoCredito.length);
                     
                     vStrHtml = '<br /><br /><button style="width:100px; height:30px; padding:0px" onclick="showSmart(1)">Cerrar</button><h3>Smartphones</h3>';
-                    vStrHtml += '<input type="search" id="finderSmart" onkeyup="funcTblFindSmart()" placeholder="Ingresar Modelo de Smartphone"/>';
+                    vStrHtml += '<input type="search" id="finderSmart" onkeyup="funcTblFindSmart()" placeholder="serie"/>';
                   
                     vStrHtml += '<table id="smartTble1" style="font-size:0.85em" width="100%" data-role="table" data-mode="columntoggle" class="table-stripe ui-responsive">';
-                    vStrHtml += '<thead ><tr><th width="5%">#</th><th width="35%">Serie</th><th class="table-stripe ui-responsive data-priority="2" width="20%">Modelo</th><th class="table-stripe ui-responsive data-priority="2" width="50%">Descripcion</th></tr></thead>';
+                    vStrHtml += '<thead><tr><th width="5%">#</th><th width="45%">Serie</th><th data-priority="2" width="50%">Desc.</th></tr></thead>';
                     vStrHtml += '<tbody>';                  
                     for(i=0; i<len; i++){                    
-                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td><a href="#" onclick="setSerieSmart(\''+ results.rows[i].serie +';'+ results.rows[i].modelo  +';'+ results.rows[i].descripcion  +  '\')">'+ results.rows[i].serie +'</a></td><td>'+ results.rows[i].modelo +'</td><td>'+ results.rows[i].descripcion +'</td></tr>';
+                        vStrHtml += '<tr><td style="text-align:center">'+ (i+1) +'</td><td><a href="#" onclick="setSerieSmart(\''+ results.rows[i].serie +';'+ results.rows[i].descripcion  +'\')">'+ results.rows[i].serie +'</a></td><td>'+ results.rows[i].descripcion +'</td></tr>';
                     }                
                 
                 vStrHtml += '</tbody> </table><br/><br/>';
@@ -4534,7 +4454,7 @@ function showSmart(vFlag){
                 $("#dvListSmart").trigger('create');
                 }else{
                     $("#dv_forms_template2").hide();
-                    alert('No tiene esta serie asignada');
+                    alert('No se Encontraron Series');
                 }
                 setTimeout(function(){ $.mobile.loading('hide') },1000); 
             });

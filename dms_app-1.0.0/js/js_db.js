@@ -6,7 +6,6 @@ db.transaction(function(cmd){
     
     var vFlag = 0;
     //cmd.executeSql('drop table tbl_series_tangibles');
-    //cmd.executeSql('drop table tbl_series_tangibles_br');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS users (id unique, pwd, name, phone, email, job_title, status, login, type, id_dms, license, id_pdv_dlr ,horus_completo)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS params (id unique, dvalue)');
     cmd.executeSql('CREATE TABLE IF NOT EXISTS tbl_kmtrs (user, fech, lat1, lng1, kmtr)');      
