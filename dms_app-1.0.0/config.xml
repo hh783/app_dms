@@ -17,7 +17,6 @@
   <preference name="ShowSplashScreenSpinner" value="false"/>
   <preference name="FadeSplashScreenDuration" value="500"/>-->
 
-  <preference name="AndroidPersistentFileLocation" value="Internal" />
   <preference name="AndroidPersistentFileLocation" value="Compatibility" />
   <preference name="orientation" value="portrait" />
   
