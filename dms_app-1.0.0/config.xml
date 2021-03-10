@@ -4,7 +4,7 @@
   <author href="#">Arodi Morga</author>
   <content src="index.html"/>
 
- <preference name="phonegap-version" value="cli-9.0.0" />
+ <preference name="phonegap-version" value="cli-8.0.0" />
   <preference name="StatusBarBackgroundColor" value="#000000"/>
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="android-build-tool" value="gradle" /> 
